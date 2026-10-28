@@ -1,0 +1,86 @@
+{
+  "_readme": "Vape Express catalogue. Edit this file to change products, prices and flavours (see README.md). Write \"CONFIRM\" for anything not yet verified. Set \"inStock\": false on a flavour to show it as sold out.",
+  "products": [
+    {
+      "id": "tropic-bar-30000",
+      "brand": "Tropic Bar",
+      "name": "Tropic Bar 30K",
+      "type": "Disposable",
+      "puffs": 30000,
+      "nicotine": "5%",
+      "price": 17,
+      "image": "/images/tropic-bar-30k.webp",
+      "heroImage": "/images/hero-feature.webp",
+      "featured": true,
+      "flavours": ["Extreme Mint", "Strawberry Sour Gummy Candy", "Cherry Cola", "Peach Mango Ice", "Blueberry Raspberry", "Mixed Berries"]
+    },
+    {
+      "id": "tropic-bar-ultra-12000",
+      "brand": "Tropic Bar",
+      "name": "Tropic Bar Ultra",
+      "type": "Disposable",
+      "puffs": 12000,
+      "price": 15,
+      "image": "/images/tropic-bar-ultra.webp",
+      "featured": true,
+      "new": true,
+      "flavours": [
+        { "name": "Cherry Berry", "nicotine": "5%" },
+        { "name": "Lychee Raspberry Watermelon", "nicotine": "5%" },
+        { "name": "Aloe Grape", "nicotine": "2%" },
+        { "name": "Strawberry", "nicotine": "2%" },
+        { "name": "Litchi Ice", "nicotine": "2%" },
+        { "name": "Blue Razz", "nicotine": "CONFIRM" }
+      ],
+      "notes": "Blue Razz comes from the newest post ('Blue Razz & Litchi Ice, $15 each'); device looks like the Ultra but the caption doesn't say. Confirm."
+    },
+    {
+      "id": "oxbar-dualblend-50000",
+      "brand": "Oxbar",
+      "name": "Oxbar Dualblend",
+      "type": "Disposable (dual flavour, screen)",
+      "puffs": 50000,
+      "nicotine": "5%",
+      "price": 18,
+      "image": "/images/oxbar-dualblend.webp",
+      "featured": true,
+      "flavours": ["Pink Lemonade / Blue Lemonade", "Strawberry Kiwi Banana", "Pineapple Blueberry", "Raspberry Mojito"]
+    },
+    {
+      "id": "life-pod-eco-kit",
+      "brand": "Life Pod",
+      "name": "Life Pod Eco Kit (device + pod)",
+      "type": "Starter kit",
+      "puffs": 8000,
+      "nicotine": "5%",
+      "price": 15,
+      "image": "/images/life-pod-eco-kit.webp",
+      "flavours": ["Spearmint", "Love 66", "Monster Drink", "Mint Bubblegum"],
+      "notes": "Pod in the graphic reads 'Nicotine 4.5%'; caption says 5%. Confirm."
+    },
+    {
+      "id": "life-pod-eco-pro-8000",
+      "brand": "Life Pod",
+      "name": "Life Pod Eco Pro Pod",
+      "type": "Refill pod",
+      "puffs": 8000,
+      "nicotine": "5%",
+      "price": 10,
+      "image": "/images/life-pod-eco-pro.webp",
+      "flavours": ["Cherry Hulls", "Melon Bubblegum", "Mango", "Blue Razz Ice", "Tropical", "Grape Ice", "White Mocha Ice", "Litchi Ice"],
+      "notes": "'Cherry Hulls' copied exactly as written; may be a typo. Confirm. Probably needs the Eco Kit device."
+    },
+    {
+      "id": "tropic-bar-blast-8000",
+      "brand": "Tropic Bar",
+      "name": "Tropic Bar Blast Pod",
+      "type": "Disposable / pod",
+      "puffs": 8000,
+      "nicotine": "5%",
+      "price": 8,
+      "image": "/images/tropic-bar-blast.webp",
+      "flavours": ["Watermelon Ice", "Peach Ice"],
+      "notes": "Price is cut off at the edge of the graphic and reads '$8'. Confirm."
+    }
+  ]
+}
