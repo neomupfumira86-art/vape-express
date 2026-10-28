@@ -29,7 +29,7 @@ export default function ProductModal({ product, onClose, onAdd }) {
         p && (
           <div className="pm__foot">
             <QtyControl value={qty} onChange={(v) => setQty(Math.max(1, v))} label="Quantity" />
-            <button className="btn btn--primary" disabled={!selected?.available} onClick={() => { onAdd(p, flavour, qty); onClose(); }}>
+            <button className="btn btn--ink" disabled={!selected?.available} onClick={() => { onAdd(p, flavour, qty); onClose(); }}>
               Add to cart · {p.price == null ? 'price TBC' : money(p.price * qty)}
             </button>
           </div>
@@ -67,7 +67,7 @@ export default function ProductModal({ product, onClose, onAdd }) {
             </fieldset>
             {anyNicotine && <p className="small muted">Nicotine strength shown next to each flavour.</p>}
 
-            <a className="btn btn--secondary btn--block" href={waLink(productEnquiry(p, flavour))} target="_blank" rel="noopener">
+            <a className="btn btn--line btn--block" href={waLink(productEnquiry(p, flavour))} target="_blank" rel="noopener">
               <WhatsAppIcon className="wa-icon" /> Ask about this on WhatsApp
             </a>
           </div>

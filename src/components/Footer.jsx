@@ -9,11 +9,11 @@ export default function Footer() {
         <p className="warning" role="note">{nicotineWarning}</p>
         <div className="footer__grid">
           <div className="footer__brand">
-            <Logo height={56} />
+            <Logo height={64} />
             <p>{business.tagline}<br />{business.city}, {business.country}.</p>
           </div>
           <nav aria-label="Footer">
-            <p className="footer__heading">Shop</p>
+            <p className="footer__heading mono">Shop</p>
             <ul className="footer__links">
               <li><a href="#shop">Products</a></li>
               <li><a href="#how-it-works">How it works</a></li>
@@ -21,14 +21,14 @@ export default function Footer() {
             </ul>
           </nav>
           <div>
-            <p className="footer__heading">Contact</p>
+            <p className="footer__heading mono">Contact</p>
             <ul className="footer__links">
               <li><a href={waLink()} target="_blank" rel="noopener">WhatsApp {business.whatsappDisplay}</a></li>
               <li><a href={business.instagramUrl} target="_blank" rel="noopener">Instagram {business.instagramHandle}</a></li>
             </ul>
           </div>
         </div>
-        <div className="footer__legal">
+        <div className="footer__legal mono">
           <span className="badge18" aria-hidden="true">18+</span>
           <p>Sales to adults aged 18 and over only. Prices in USD. © {new Date().getFullYear()} {business.name}.</p>
         </div>

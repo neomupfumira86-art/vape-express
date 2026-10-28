@@ -25,7 +25,6 @@ export default function Shop({ products, status, onOpen, onAdd }) {
   const [sort, setSort] = useState('featured');
 
   const brands = useMemo(() => [...new Set(products.map((p) => p.brand).filter(Boolean))], [products]);
-  const highlights = products.filter((p) => p.featured || p.isNew);
 
   const shown = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -41,25 +40,14 @@ export default function Shop({ products, status, onOpen, onAdd }) {
   return (
     <section id="shop" className="section" aria-labelledby="shop-title">
       <div className="container">
-        {highlights.length > 0 && (
-          <div className="featured">
-            <div className="section__head">
-              <p className="label">Featured &amp; new stock</p>
-              <h2 className="section__title">Top picks</h2>
-            </div>
-            <div className="rail" role="list">
-              {highlights.map((p, i) => (
-                <div role="listitem" key={p.id} className="rail__item">
-                  <ProductCard product={p} onOpen={onOpen} onAdd={onAdd} eager={i < 2} />
-                </div>
-              ))}
-            </div>
+        <div className="section__head section__head--split">
+          <div>
+            <p className="section__index mono">(02) Shop</p>
+            <h2 id="shop-title" className="section__title">The range</h2>
           </div>
-        )}
-
-        <div className="section__head">
-          <p className="label">Catalogue</p>
-          <h2 id="shop-title" className="section__title">Shop the range</h2>
+          <p className="section__aside">
+            Pick a flavour, add it to your cart and send the order on WhatsApp. The owner confirms stock and delivery with you before anything is paid.
+          </p>
         </div>
 
         <div className="filters" role="search">
@@ -95,15 +83,15 @@ export default function Shop({ products, status, onOpen, onAdd }) {
           </label>
         </div>
 
-        <p className="filters__count" aria-live="polite">
+        <p className="filters__count mono" aria-live="polite">
           {status === 'loading' ? 'Loading products…' : `${shown.length} product${shown.length === 1 ? '' : 's'}`}
         </p>
 
         {status === 'error' && <p className="notice">We couldn’t load the catalogue. Please refresh, or order directly on WhatsApp.</p>}
 
-        <div className="grid">
-          {shown.map((p) => (
-            <ProductCard key={p.id} product={p} onOpen={onOpen} onAdd={onAdd} />
+        <div className="index">
+          {shown.map((p, i) => (
+            <ProductCard key={p.id} product={p} index={i} onOpen={onOpen} onAdd={onAdd} eager={i < 2} />
           ))}
         </div>
 
@@ -111,7 +99,7 @@ export default function Shop({ products, status, onOpen, onAdd }) {
           <div className="empty">
             <p>No products match that search.</p>
             {filtersOn && (
-              <button className="btn btn--secondary" onClick={() => { setQ(''); setBrand('all'); setPuffs('all'); }}>
+              <button className="btn btn--line" onClick={() => { setQ(''); setBrand('all'); setPuffs('all'); }}>
                 Clear filters
               </button>
             )}

@@ -61,7 +61,7 @@ export default function App() {
       )}
       <Header count={cart.count} onCart={() => setCartOpen(true)} />
       <main>
-        <Hero featured={featured} />
+        <Hero featured={featured} products={products} />
         <Shop products={products} status={status} onOpen={setActive} onAdd={add} />
         <HowItWorks />
         <Delivery />

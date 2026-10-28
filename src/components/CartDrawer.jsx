@@ -57,14 +57,14 @@ export default function CartDrawer({ open, onClose, cart }) {
       <div className="sent">
         <p>WhatsApp should have opened with your order message. Press <strong>send</strong> in WhatsApp to submit it.</p>
         <p className="muted">If WhatsApp didn’t open, use this button:</p>
-        <a className="btn btn--primary btn--block" href={sentLink} target="_blank" rel="noopener"><WhatsAppIcon /> Open WhatsApp with my order</a>
+        <a className="btn btn--ink btn--block" href={sentLink} target="_blank" rel="noopener"><WhatsAppIcon /> Open WhatsApp with my order</a>
         <p className="small muted">The owner will confirm stock, payment and delivery with you on WhatsApp.</p>
       </div>
     );
     footer = (
       <div className="cart__foot">
-        <button className="btn btn--secondary" onClick={() => setStep('cart')}>Back to cart</button>
-        <button className="btn btn--primary" onClick={() => { cart.clear(); setForm(empty); close(); }}>Done — clear cart</button>
+        <button className="btn btn--line" onClick={() => setStep('cart')}>Back to cart</button>
+        <button className="btn btn--ink" onClick={() => { cart.clear(); setForm(empty); close(); }}>Done — clear cart</button>
       </div>
     );
   } else if (step === 'checkout') {
@@ -101,8 +101,8 @@ export default function CartDrawer({ open, onClose, cart }) {
     );
     footer = (
       <div className="cart__foot">
-        <button className="btn btn--secondary" onClick={() => setStep('cart')}>Back</button>
-        <button className="btn btn--primary" type="submit" form="checkout"><WhatsAppIcon /> Send order on WhatsApp</button>
+        <button className="btn btn--line" onClick={() => setStep('cart')}>Back</button>
+        <button className="btn btn--ink" type="submit" form="checkout"><WhatsAppIcon /> Send order on WhatsApp</button>
       </div>
     );
   } else {
@@ -110,7 +110,7 @@ export default function CartDrawer({ open, onClose, cart }) {
     body = cart.items.length === 0 ? (
       <div className="empty">
         <p>Your cart is empty.</p>
-        <a className="btn btn--primary" href="#shop" onClick={close}>Browse products</a>
+        <a className="btn btn--ink" href="#shop" onClick={close}>Browse products</a>
       </div>
     ) : (
       <>
@@ -136,7 +136,7 @@ export default function CartDrawer({ open, onClose, cart }) {
     );
     footer = cart.items.length > 0 && (
       <div className="cart__foot">
-        <button className="btn btn--primary btn--block" onClick={() => setStep('checkout')}>Checkout</button>
+        <button className="btn btn--ink btn--block" onClick={() => setStep('checkout')}>Checkout</button>
       </div>
     );
   }
