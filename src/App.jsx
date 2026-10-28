@@ -89,7 +89,7 @@ export default function App() {
       <Header count={cart.count} onCart={() => setCartOpen(true)} active={activeSection} />
       <SmokeTrail />
       <main>
-        <Hero featured={featured} products={products} />
+        <Hero featured={featured} products={products} onOpen={setActive} />
         {status === 'ready' && <Ticker items={tickerItems} />}
         <Shop products={products} status={status} onOpen={setActive} onAdd={add} />
         <HowItWorks />

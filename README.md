@@ -57,24 +57,13 @@ Edit **`src/config.js`**:
 - `delivery`: replace each `[CONFIRM WITH OWNER]` with the real wording. Placeholders appear on the site as dashed orange tags, so nothing is hidden by accident.
 - `business`: WhatsApp number, Instagram link, tagline.
 
-## Hero background video (Higgsfield)
+## Hero background video
 
-The video hasn't been generated yet. The Higgsfield connector available to Claude can browse models and credits but cannot generate media, so it needs one manual run in the Higgsfield app:
+The hero plays `public/media/hero.webm` (or `hero.mp4` on browsers without WebM) behind the headline, with `hero-poster.webp` shown instantly while it loads. The current clip was made in Higgsfield, then compressed for the web with the audio removed (about 230–490 KB).
 
-- **Model:** Cinema Studio Video 3.0 (or Seedance 2.0). 16:9, 8 seconds, 1080p, **audio off**.
-- **Prompt:** use section 2 of `VapeExpress_Claude_and_Higgsfield_Prompts.md` exactly, including the negative prompt. Use the logo only as a colour reference. The clip must show a generic, unbranded device with no text.
-- Then follow the steps below.
-
-
-The hero works without a video: it already has a native animated intro (light sweep, vapour drift, staggered headline). To add a Higgsfield clip on top:
-
-1. Export the clip and save it as `public/media/hero.mp4`. Optionally also save a `hero.webm` version and a still frame as `hero-poster.jpg`.
-2. Keep each file **under about 3 MB** (8 seconds at 1080p, H.264, no audio).
-3. Redeploy. If the files are missing, or a visitor has reduced motion or data-saver turned on, the site skips the video automatically.
-
-To turn the video off, set `heroVideo.enabled = false` in `src/config.js`.
-
----
+- To replace it, export an 8–10 second clip with the same names into `public/media/`. Keep each file under about 3 MB, with no audio.
+- The video is skipped for visitors who use reduced motion or data saver (they see the poster), and it pauses when scrolled off screen.
+- To turn it off, set `heroVideo.enabled = false` in `src/config.js`.
 
 ## Preview and deploy
 

@@ -51,7 +51,7 @@ export const heroVideo = {
   enabled: true,
   mp4: '/media/hero.mp4',
   webm: '/media/hero.webm',
-  poster: '/media/hero-poster.jpg',
+  poster: '/media/hero-poster.webp',
 };
 
 export const nicotineWarning = 'This product contains nicotine. Nicotine is an addictive chemical.';
