@@ -93,7 +93,7 @@ p:last-child { margin-bottom: 0; }
 .btn--line:hover .wa-icon { color: var(--text-inv); }
 .btn--blue { background: var(--blue); color: var(--ink); }
 .btn--blue:hover { background: #57b4ff; }
-.btn--ghost-light { border-color: rgba(243, 242, 238, 0.4); color: var(--text-inv); }
+.btn--ghost-light { background: transparent; border-color: rgba(243, 242, 238, 0.4); color: var(--text-inv); }
 .btn--ghost-light:hover { border-color: var(--text-inv); background: rgba(243, 242, 238, 0.06); }
 .wa-icon { color: var(--wa); }
 .btn--ghost-light .wa-icon { color: #3ccf78; }
