@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import ProductCard from './ProductCard.jsx';
 import { SearchIcon } from './Icons.jsx';
 import { puffCount } from '../lib/catalogue.js';
+import Smoke from './Smoke.jsx';
 
 const puffRanges = {
   all: ['All puffs', () => true],
@@ -39,6 +40,7 @@ export default function Shop({ products, status, onOpen, onAdd }) {
 
   return (
     <section id="shop" className="section" aria-labelledby="shop-title">
+      <Smoke tone="dark" density={2} />
       <div className="container">
         <div className="section__head section__head--split">
           <div>

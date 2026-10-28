@@ -3,6 +3,7 @@ import { WhatsAppIcon, ArrowIcon } from './Icons.jsx';
 import { business, heroVideo } from '../config.js';
 import { waLink } from '../lib/whatsapp.js';
 import { money } from '../lib/format.js';
+import Smoke from './Smoke.jsx';
 
 // Cinematic hero: oversized expanded headline over a dark ground, then copy + actions
 // beside one tall product image. The optional hero video (config.heroVideo) replaces the
@@ -31,6 +32,7 @@ export default function Hero({ featured, products }) {
 
   return (
     <section id="top" className="hero" aria-labelledby="hero-title">
+      <Smoke />
       <div className="container">
         <p className="hero__kicker mono">
           <span>Vape Express</span>

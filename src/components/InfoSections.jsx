@@ -1,6 +1,7 @@
 import { business, delivery, CONFIRM } from '../config.js';
 import { waLink } from '../lib/whatsapp.js';
 import { WhatsAppIcon, InstagramIcon, ArrowIcon } from './Icons.jsx';
+import Smoke from './Smoke.jsx';
 
 const steps = [
   ['Choose', 'Browse the range, pick a flavour and add it to your cart.'],
@@ -26,6 +27,7 @@ const Value = ({ v }) =>
 export function HowItWorks() {
   return (
     <section id="how-it-works" className="section section--ink" aria-labelledby="how-title">
+      <Smoke />
       <div className="container">
         <SectionHeader index="(03) How it works" title="Three steps." id="how-title" inverse>
           No account and no online payment. Your order goes to the owner on WhatsApp, who confirms everything with you.
@@ -58,6 +60,7 @@ export function Delivery() {
   ];
   return (
     <section id="delivery" className="section" aria-labelledby="delivery-title">
+      <Smoke tone="dark" density={2} />
       <div className="container">
         <SectionHeader index="(04) Delivery" title={`Delivered around ${business.city}.`} id="delivery-title">
           {delivery.area} Send your area on WhatsApp and we’ll confirm the details for your order.

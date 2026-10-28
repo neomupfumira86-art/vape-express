@@ -11,9 +11,17 @@ import { WhatsAppIcon } from './components/Icons.jsx';
 import { loadCatalogue } from './lib/catalogue.js';
 import { useCart } from './lib/useCart.js';
 import { waLink } from './lib/whatsapp.js';
+import Intro from './components/Intro.jsx';
+import { useScrollSmoke } from './lib/useScrollSmoke.js';
 
 const AGE_KEY = 'vx-age-ok';
 const readAge = () => { try { return localStorage.getItem(AGE_KEY) === 'yes'; } catch { return false; } };
+const INTRO_KEY = 'vx-intro-seen';
+// The intro plays once per browser session, never for reduced-motion users.
+const wantIntro = () => {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+  try { return sessionStorage.getItem(INTRO_KEY) !== 'yes'; } catch { return true; }
+};
 
 export default function App() {
   const [adult, setAdult] = useState(readAge);
@@ -22,7 +30,21 @@ export default function App() {
   const [active, setActive] = useState(null);
   const [cartOpen, setCartOpen] = useState(false);
   const [toast, setToast] = useState('');
+  const [intro, setIntro] = useState(wantIntro);
   const cart = useCart();
+  const showIntro = adult && intro;
+
+  // Hold the hero entrance until the intro has gone.
+  useEffect(() => {
+    document.body.classList.toggle('is-intro', showIntro);
+  }, [showIntro]);
+
+  useScrollSmoke([adult, status]);
+
+  function endIntro() {
+    try { sessionStorage.setItem(INTRO_KEY, 'yes'); } catch { /* fine */ }
+    setIntro(false);
+  }
 
   useEffect(() => {
     loadCatalogue()
@@ -53,6 +75,7 @@ export default function App() {
 
   return (
     <>
+      {showIntro && <Intro onDone={endIntro} />}
       <a href="#shop" className="skip">Skip to products</a>
       {hasSamples && (
         <div className="devbanner" role="status">

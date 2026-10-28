@@ -408,3 +408,62 @@ textarea.input { height: auto; padding: 12px; resize: vertical; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
 }
+
+/* ── Smoke (scroll-driven plumes from the sides) ──
+   --p (0→1) is written by useScrollSmoke(): plumes slide in from their edge as the
+   section enters, then drift upward as it scrolls past. Transform/opacity only. */
+.hero, .section, .footer { position: relative; }
+.footer { overflow: hidden; }
+.hero > .container, .section > .container, .footer > .container { position: relative; z-index: 1; }
+.smoke { --p: 0.5; --k: 1; position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.smoke--dark { --k: 0.32; }
+.smoke__plume {
+  --o: 0.5; --top: 10%;
+  position: absolute; top: var(--top); width: clamp(300px, 60vw, 920px);
+  opacity: calc(var(--o) * var(--k) * min(1, var(--p) * 3));
+  will-change: transform, opacity;
+}
+.smoke__plume img { display: block; width: 100%; height: auto; }
+.smoke--dark .smoke__plume img { filter: brightness(0.1); }
+.smoke__plume--l { left: 0; transform: translate3d(calc(-62% + 62% * min(1, var(--p) * 2.2)), calc((0.5 - var(--p)) * 140px), 0); }
+.smoke__plume--r { right: 0; transform: translate3d(calc(62% - 62% * min(1, var(--p) * 2.2)), calc((0.5 - var(--p)) * 190px), 0) scaleX(-1); }
+.smoke__plume--a { --top: 46%; --o: 0.42; }
+.smoke__plume--b { --top: 8%; --o: 0.36; }
+.smoke__plume--c { --top: 70%; --o: 0.3; width: clamp(260px, 44vw, 700px); }
+.smoke__plume--d { --top: 58%; --o: 0.28; width: clamp(260px, 48vw, 760px); }
+@media (prefers-reduced-motion: no-preference) {
+  .smoke__plume img { animation: smokeDrift 16s ease-in-out infinite; transform-origin: 0 50%; }
+  .smoke__plume--b img { animation-duration: 21s; animation-delay: -6s; }
+  .smoke__plume--c img { animation-duration: 18s; animation-delay: -11s; }
+  .smoke__plume--d img { animation-duration: 24s; animation-delay: -3s; }
+}
+@keyframes smokeDrift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(5%, -4%, 0) scale(1.08); }
+}
+
+/* ── Intro (once per session, skippable) ── */
+body.is-intro { overflow: hidden; }
+body.is-intro .hero * { animation-play-state: paused !important; }
+.intro { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; overflow: hidden; background: var(--ink); color: var(--text-inv); cursor: pointer; padding: var(--gutter); }
+.intro.is-leaving { animation: introOut 0.7s var(--ease) forwards; }
+@keyframes introOut { from { clip-path: inset(0 0 0 0); } to { clip-path: inset(0 0 100% 0); } }
+.intro__content { position: relative; z-index: 1; display: grid; justify-items: center; text-align: center; }
+.intro__logo { animation: introLogo 0.6s var(--ease) both; }
+@keyframes introLogo { from { opacity: 0; transform: scale(0.82); } }
+.intro__word { margin: 26px 0 0; font-family: var(--display); font-stretch: 125%; font-weight: 800; text-transform: uppercase; font-size: clamp(2.6rem, 12.5vw, 10rem); line-height: 0.86; letter-spacing: -0.035em; }
+.intro__word .hline { display: block; overflow: hidden; padding-bottom: 0.04em; }
+.intro__word .hline > span { display: block; animation: lineUp 0.8s var(--ease) 0.22s both; }
+.intro__word .hline:nth-child(2) > span { animation-delay: 0.36s; }
+.intro__word .hline--accent { color: var(--blue); }
+.intro__rule { display: block; width: min(560px, 72vw); height: 2px; margin: 28px 0 18px; background: var(--blue); transform-origin: left; animation: ruleIn 0.9s var(--ease) 0.7s both; }
+@keyframes ruleIn { from { transform: scaleX(0); } }
+.intro__tag { margin: 0; color: var(--text-inv-2); letter-spacing: 0.2em; animation: fadeUp 0.6s var(--ease) 1s both; }
+.intro__skip { position: absolute; right: var(--gutter); bottom: 24px; z-index: 2; padding: 10px 14px; border: 1px solid var(--rule-inv); background: none; color: var(--text-inv-2); cursor: pointer; }
+.intro__skip:hover { color: var(--text-inv); border-color: var(--text-inv); }
+.intro__smoke img { position: absolute; width: clamp(320px, 70vw, 1000px); height: auto; opacity: 0; }
+.intro__plume--l { left: 0; top: 14%; animation: plumeL 2.4s var(--ease) 0.15s both; }
+.intro__plume--l2 { left: 0; top: 54%; animation: plumeL 2.6s var(--ease) 0.4s both; }
+.intro__plume--r { right: 0; top: 30%; animation: plumeR 2.4s var(--ease) 0.25s both; }
+@keyframes plumeL { from { opacity: 0; transform: translateX(-60%); } to { opacity: 0.55; transform: translateX(0); } }
+@keyframes plumeR { from { opacity: 0; transform: translateX(60%) scaleX(-1); } to { opacity: 0.5; transform: translateX(0) scaleX(-1); } }
