@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { money } from '../lib/format.js';
 import { puffLabel, nicotineSummary } from '../lib/catalogue.js';
 import { waLink, productEnquiry } from '../lib/whatsapp.js';
-import { WhatsAppIcon, ArrowIcon } from './Icons.jsx';
+import { WhatsAppIcon, ArrowIcon, CheckIcon } from './Icons.jsx';
 import { useReveal } from '../lib/useScrollFx.js';
 
 // One entry in the numbered product index (editorial row, not a card grid).
@@ -14,6 +14,12 @@ export default function ProductCard({ product, index, onOpen, onAdd, eager = fal
   const selectId = `flv-${product.id}`;
   const specs = [puffLabel(product), nicotineSummary(product)].filter(Boolean);
   const ref = useReveal();
+  const [added, setAdded] = useState(false);
+  useEffect(() => {
+    if (!added) return;
+    const t = setTimeout(() => setAdded(false), 1600);
+    return () => clearTimeout(t);
+  }, [added]);
 
   return (
     <article className="item" ref={ref} data-reveal>
@@ -48,8 +54,12 @@ export default function ProductCard({ product, index, onOpen, onAdd, eager = fal
           ))}
         </select>
         <div className="item__actions">
-          <button className="btn btn--ink" disabled={soldOut || !selected?.available} onClick={() => onAdd(product, flavour)}>
-            {soldOut ? 'Out of stock' : 'Add to cart'}
+          <button
+            className={`btn btn--ink ${added ? 'is-added' : ''}`}
+            disabled={soldOut || !selected?.available}
+            onClick={() => { onAdd(product, flavour); setAdded(true); }}
+          >
+            {soldOut ? 'Out of stock' : added ? <><CheckIcon /> Added</> : 'Add to cart'}
           </button>
           <a
             className="btn btn--icon btn--line"

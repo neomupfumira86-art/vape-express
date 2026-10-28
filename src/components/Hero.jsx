@@ -4,6 +4,7 @@ import { business, heroVideo } from '../config.js';
 import { waLink } from '../lib/whatsapp.js';
 import { money } from '../lib/format.js';
 import Smoke from './Smoke.jsx';
+import { Link } from '../lib/router.jsx';
 
 // Cinematic hero: full-bleed background video (poster first, video fades in), a dark veil
 // for legibility, the oversized headline, actions, live catalogue facts and a featured card.
@@ -82,7 +83,7 @@ export default function Hero({ featured, products, onOpen }) {
               delivery with you personally on WhatsApp.
             </p>
             <div className="hero__ctas">
-              <a className="btn btn--blue btn--lg" href="#shop">Shop the collection <ArrowIcon /></a>
+              <Link className="btn btn--blue btn--lg" to="/shop">Shop the collection <ArrowIcon /></Link>
               <a className="btn btn--ghost-light btn--lg" href={waLink('Hi Vape Express, I would like to place an order.')} target="_blank" rel="noopener">
                 <WhatsAppIcon className="wa-icon" /> Order on WhatsApp
               </a>

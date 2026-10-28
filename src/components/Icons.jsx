@@ -33,6 +33,9 @@ export const InfoIcon = (p) => (
 export const ArrowIcon = (p) => (
   <svg {...base} {...p}><path d="M5 12h14M13 6l6 6-6 6" /></svg>
 );
+export const CheckIcon = (p) => (
+  <svg {...base} {...p}><path d="m5 12.5 4.2 4.2L19 7" /></svg>
+);
 export const MinusIcon = (p) => (
   <svg {...base} {...p}><path d="M6 12h12" /></svg>
 );

@@ -1,19 +1,20 @@
 import Logo from './Logo.jsx';
 import { business } from '../config.js';
 import { waLink } from '../lib/whatsapp.js';
+import { Link } from '../lib/router.jsx';
 
-const links = [
-  ['shop', 'Shop'],
-  ['how-it-works', 'How it works'],
-  ['delivery', 'Delivery'],
-  ['contact', 'Contact'],
+export const NAV = [
+  ['/shop', 'Shop'],
+  ['/how-it-works', 'How to order'],
+  ['/delivery', 'Delivery'],
+  ['/contact', 'Contact'],
 ];
 
-export default function Header({ count, onCart, active }) {
-  const navLinks = links.map(([id, label]) => (
-    <a key={id} href={`#${id}`} className={active === id ? 'is-active' : ''} aria-current={active === id ? 'location' : undefined}>
+export default function Header({ count, onCart, path }) {
+  const navLinks = NAV.map(([to, label]) => (
+    <Link key={to} to={to} className={path === to ? 'is-active' : ''} aria-current={path === to ? 'page' : undefined}>
       {label}
-    </a>
+    </Link>
   ));
   return (
     <>
@@ -26,15 +27,15 @@ export default function Header({ count, onCart, active }) {
       </div>
       <header className="header">
         <div className="container header__inner">
-          <a href="#top" className="header__brand" aria-label="Vape Express, back to top">
+          <Link to="/" className="header__brand" aria-label="Vape Express home">
             <Logo height={40} />
-          </a>
+          </Link>
           <nav aria-label="Main" className="header__nav">{navLinks}</nav>
           <button className="cartbtn" onClick={onCart} aria-label={`Open cart, ${count} item${count === 1 ? '' : 's'}`}>
-            Cart <span className="cartbtn__count" aria-hidden="true">({String(count).padStart(2, '0')})</span>
+            Cart <span key={count} className="cartbtn__count bump" aria-hidden="true">({String(count).padStart(2, '0')})</span>
           </button>
         </div>
-        <nav aria-label="Sections" className="header__subnav container">{navLinks}</nav>
+        <nav aria-label="Pages" className="header__subnav container">{navLinks}</nav>
         <span className="header__progress" aria-hidden="true" />
       </header>
     </>

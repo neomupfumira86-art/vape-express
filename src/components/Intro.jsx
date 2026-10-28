@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Logo from './Logo.jsx';
 import { business } from '../config.js';
 
-const HOLD = 2300; // ms before the intro wipes away
+const HOLD = 1900; // ms before the intro wipes away
 const EXIT = 700;  // ms for the wipe
 
 // Brand intro shown once per browser session after the age check.

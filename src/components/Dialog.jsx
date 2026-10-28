@@ -11,6 +11,9 @@ export default function Dialog({ open, onClose, title, variant = 'modal', childr
     if (!d) return;
     if (open && !d.open) d.showModal();
     if (!open && d.open) d.close();
+    // Lock the page behind the dialog so only the dialog scrolls (no double scrollbars).
+    document.documentElement.classList.toggle('has-dialog', open);
+    return () => document.documentElement.classList.remove('has-dialog');
   }, [open]);
 
   return (

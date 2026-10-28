@@ -1,36 +1,31 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
-const SECTIONS = ['shop', 'how-it-works', 'delivery', 'contact'];
 const motionOK = () => !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // One scroll loop for the whole page (a single rAF per frame, idle when nothing moves):
 //  - --progress on <html> (header progress bar) and .is-scrolled (back-to-top)
-//  - the active section id (header + mobile bar highlight)
 //  - --p on each visible section .smoke (slide/drift plumes)
 //  - --i on the page-wide .smoke-trail: rises with scroll speed, then decays;
 //    data-tone says whether the screen centre is a dark or light section.
+// Re-runs when `deps` change (e.g. on page navigation) so new sections are picked up.
 export function useScrollFx(deps = []) {
-  const [active, setActive] = useState('');
-
   useEffect(() => {
     const root = document.documentElement;
     const motion = motionOK();
     root.classList.toggle('fx', motion);
 
-    const smokes = [...document.querySelectorAll('.smoke')];
     const visible = new Set();
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => (e.isIntersecting ? visible.add(e.target) : visible.delete(e.target)));
       schedule();
     });
-    smokes.forEach((el) => io.observe(el));
+    document.querySelectorAll('.smoke').forEach((el) => io.observe(el));
 
     const trail = document.querySelector('.smoke-trail');
     let frame = 0;
     let lastY = window.scrollY;
     let lastT = performance.now();
     let intensity = 0;
-    let current = null;
 
     function tick(now) {
       frame = 0;
@@ -43,17 +38,6 @@ export function useScrollFx(deps = []) {
       const max = root.scrollHeight - vh;
       root.style.setProperty('--progress', max > 0 ? (y / max).toFixed(4) : '0');
       root.classList.toggle('is-scrolled', y > vh * 0.9);
-
-      let id = '';
-      for (const s of SECTIONS) {
-        const el = document.getElementById(s);
-        if (el && el.getBoundingClientRect().top <= vh * 0.4) id = s;
-      }
-      if (id !== current) {
-        current = id;
-        setActive(id);
-      }
-
       if (!motion) return;
 
       visible.forEach((el) => {
@@ -65,9 +49,8 @@ export function useScrollFx(deps = []) {
         intensity = Math.max(intensity * 0.93, Math.min(1, speed / 2.4));
         if (intensity < 0.005) intensity = 0;
         trail.style.setProperty('--i', intensity.toFixed(3));
-        const under = document.elementFromPoint(window.innerWidth / 2, vh / 2)?.closest('.hero, .section, .footer, .ticker');
-        const dark = !!under && (under.matches('.hero, .section--ink, .footer'));
-        trail.dataset.tone = dark ? 'dark' : 'light';
+        const under = document.elementFromPoint(window.innerWidth / 2, vh / 2)?.closest('.hero, .pagehead, .cta, .section, .footer, .ticker');
+        trail.dataset.tone = under?.matches('.hero, .pagehead, .cta, .section--ink, .footer') ? 'dark' : 'light';
         if (intensity > 0) schedule(); // keep decaying after the scroll stops
       }
     }
@@ -86,8 +69,6 @@ export function useScrollFx(deps = []) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
-
-  return active;
 }
 
 // Fades an element up the first time it scrolls into view (only when motion is allowed;

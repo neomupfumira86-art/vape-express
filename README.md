@@ -13,6 +13,18 @@ A mobile-first store for Vape Express (Harare). Customers browse products, pick 
 - **Product photos:** `public/images/*.webp`, cropped from the Instagram post graphics. The price, logo and Instagram on-screen UI (cursor arrow, notification badge) were removed so the site can show live prices. The Tropic Bar 30K image and hero use the higher-resolution post the owner sent. Clean studio product shots would look better; replace any file with the same name when available.
 - **Design:** built on the ClientFlow web-design system: a cinematic dark hero, then editorial paper sections with numbered headings, thin rules and a numbered product index (no card grid). Type: Archivo Expanded for headlines (echoes the wide "EXPRESS" in the logo), Inter Tight for body text, IBM Plex Mono for labels and numbers. Colours: ink `#0B0F17`, paper `#F3F2EE`, brand blue `#1E9BFF` (on dark) and `#0B5FD0` (text on light). All tokens are at the top of `src/styles.css`.
 
+## Pages
+
+| Page | Address | What's on it |
+|---|---|---|
+| Home | `/` | Hero with background video, brand ticker, top picks, three steps, order band |
+| Shop | `/shop` | Full catalogue with brand filters, search, puff filter and sorting |
+| How to order | `/how-it-works` | The three steps and payment preferences (no online payment) |
+| Delivery | `/delivery` | Delivery terms (placeholders until the owner confirms) |
+| Contact | `/contact` | WhatsApp and Instagram |
+
+The cart, checkout and product details work on every page. `vercel.json` sends every page address to the app, so direct links and refreshes work.
+
 ## Updating products, prices and flavours
 
 Everything lives in **`public/products.json`**. Edit it, save, and redeploy.

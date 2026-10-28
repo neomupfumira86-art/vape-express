@@ -1,6 +1,8 @@
 import Logo from './Logo.jsx';
 import { business, nicotineWarning } from '../config.js';
 import { waLink } from '../lib/whatsapp.js';
+import { Link } from '../lib/router.jsx';
+import { NAV } from './Header.jsx';
 
 export default function Footer() {
   return (
@@ -13,11 +15,10 @@ export default function Footer() {
             <p>{business.tagline}<br />{business.city}, {business.country}.</p>
           </div>
           <nav aria-label="Footer">
-            <p className="footer__heading mono">Shop</p>
+            <p className="footer__heading mono">Pages</p>
             <ul className="footer__links">
-              <li><a href="#shop">Products</a></li>
-              <li><a href="#how-it-works">How it works</a></li>
-              <li><a href="#delivery">Delivery</a></li>
+              <li><Link to="/">Home</Link></li>
+              {NAV.map(([to, label]) => <li key={to}><Link to={to}>{label}</Link></li>)}
             </ul>
           </nav>
           <div>

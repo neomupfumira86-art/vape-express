@@ -5,16 +5,21 @@ import Hero from './components/Hero.jsx';
 import Shop from './components/Shop.jsx';
 import ProductModal from './components/ProductModal.jsx';
 import CartDrawer from './components/CartDrawer.jsx';
-import { HowItWorks, Delivery, Contact } from './components/InfoSections.jsx';
+import { HowItWorks, PaymentInfo, Delivery, Contact } from './components/InfoSections.jsx';
 import Footer from './components/Footer.jsx';
-import { ArrowIcon } from './components/Icons.jsx';
-import { loadCatalogue } from './lib/catalogue.js';
-import { useCart } from './lib/useCart.js';
+import PageHead from './components/PageHead.jsx';
+import HomePicks from './components/HomePicks.jsx';
+import OrderCta from './components/OrderCta.jsx';
 import Intro from './components/Intro.jsx';
-import { useScrollFx } from './lib/useScrollFx.js';
 import SmokeTrail from './components/SmokeTrail.jsx';
 import MobileBar from './components/MobileBar.jsx';
 import Ticker from './components/Ticker.jsx';
+import { ArrowIcon } from './components/Icons.jsx';
+import { loadCatalogue } from './lib/catalogue.js';
+import { useCart } from './lib/useCart.js';
+import { useScrollFx } from './lib/useScrollFx.js';
+import { usePath, PAGES } from './lib/router.jsx';
+import { business } from './config.js';
 
 const AGE_KEY = 'vx-age-ok';
 const readAge = () => { try { return localStorage.getItem(AGE_KEY) === 'yes'; } catch { return false; } };
@@ -34,6 +39,7 @@ export default function App() {
   const [toast, setToast] = useState('');
   const [intro, setIntro] = useState(wantIntro);
   const cart = useCart();
+  const path = usePath();
   const showIntro = adult && intro;
 
   // Hold the hero entrance until the intro has gone.
@@ -41,7 +47,13 @@ export default function App() {
     document.body.classList.toggle('is-intro', showIntro);
   }, [showIntro]);
 
-  const activeSection = useScrollFx([adult, status]);
+  // New page: start at the top and name the tab.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    document.title = `${PAGES[path].title} | ${business.name}`;
+  }, [path]);
+
+  useScrollFx([adult, status, path]);
 
   function endIntro() {
     try { sessionStorage.setItem(INTRO_KEY, 'yes'); } catch { /* fine */ }
@@ -56,7 +68,7 @@ export default function App() {
 
   useEffect(() => {
     if (!toast) return;
-    const t = setTimeout(() => setToast(''), 2400);
+    const t = setTimeout(() => setToast(''), 2600);
     return () => clearTimeout(t);
   }, [toast]);
 
@@ -75,36 +87,84 @@ export default function App() {
   const featured = products.find((p) => p.featured) ?? products[0];
   const hasSamples = products.some((p) => p.sample);
   const brands = [...new Set(products.map((p) => p.brand).filter(Boolean))];
-  const tickerItems = [...brands, 'Delivered around Harare', 'Order on WhatsApp', 'Adults 18+'];
+  const tickerItems = [...brands, `Delivered around ${business.city}`, 'Order on WhatsApp', 'Adults 18+'];
+
+  let page;
+  if (path === '/shop') {
+    page = (
+      <>
+        <PageHead index="02" label="Shop" title="The" accent="collection.">
+          Every product, flavour and price in one place. Filter by brand, pick a flavour and add it to your cart — the owner confirms stock with you on WhatsApp.
+        </PageHead>
+        <Shop products={products} status={status} onOpen={setActive} onAdd={add} />
+        <OrderCta title="Need a hand choosing?" />
+      </>
+    );
+  } else if (path === '/how-it-works') {
+    page = (
+      <>
+        <PageHead index="03" label="How to order" title="Order in" accent="three steps.">
+          No account and no online payment. Build your cart, send it on WhatsApp, and the owner confirms stock, payment and delivery with you directly.
+        </PageHead>
+        <HowItWorks head={false} />
+        <PaymentInfo />
+        <OrderCta />
+      </>
+    );
+  } else if (path === '/delivery') {
+    page = (
+      <>
+        <PageHead index="04" label="Delivery" title="Delivered around" accent={`${business.city}.`}>
+          Deliveries around {business.city}. Send your area on WhatsApp and we’ll confirm the details for your order.
+        </PageHead>
+        <Delivery head={false} />
+        <OrderCta />
+      </>
+    );
+  } else if (path === '/contact') {
+    page = (
+      <>
+        <PageHead index="05" label="Contact" title="Questions?" accent="Message us.">
+          The quickest way to reach Vape Express is WhatsApp — for orders, stock questions and delivery.
+        </PageHead>
+        <Contact head={false} />
+      </>
+    );
+  } else {
+    page = (
+      <>
+        <Hero featured={featured} products={products} onOpen={setActive} />
+        {status === 'ready' && <Ticker items={tickerItems} />}
+        <HomePicks products={products} onOpen={setActive} onAdd={add} />
+        <HowItWorks more />
+        <OrderCta />
+      </>
+    );
+  }
 
   return (
     <>
       {showIntro && <Intro onDone={endIntro} />}
-      <a href="#shop" className="skip">Skip to products</a>
+      <a href="#main" className="skip">Skip to content</a>
       {hasSamples && (
         <div className="devbanner" role="status">
           Preview: this store is showing <strong>sample products</strong>. Replace <code>public/products.json</code> before launch.
         </div>
       )}
-      <Header count={cart.count} onCart={() => setCartOpen(true)} active={activeSection} />
+      <Header count={cart.count} onCart={() => setCartOpen(true)} path={path} />
       <SmokeTrail />
-      <main>
-        <Hero featured={featured} products={products} onOpen={setActive} />
-        {status === 'ready' && <Ticker items={tickerItems} />}
-        <Shop products={products} status={status} onOpen={setActive} onAdd={add} />
-        <HowItWorks />
-        <Delivery />
-        <Contact />
+      <main id="main" key={path} className="page">
+        {page}
       </main>
       <Footer />
 
       <ProductModal product={active} onClose={() => setActive(null)} onAdd={add} />
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} cart={cart} />
 
-      <MobileBar active={activeSection} count={cart.count} total={cart.total} onCart={() => setCartOpen(true)} />
-      <a className="totop" href="#top" aria-label="Back to top">
+      <MobileBar path={path} count={cart.count} total={cart.total} onCart={() => setCartOpen(true)} />
+      <button type="button" className="totop" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} aria-label="Back to top">
         <ArrowIcon style={{ transform: 'rotate(-90deg)' }} />
-      </a>
+      </button>
 
       <div className="toast" role="status" aria-live="polite">
         {toast && (

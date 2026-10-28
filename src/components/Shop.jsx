@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import ProductCard from './ProductCard.jsx';
 import { SearchIcon } from './Icons.jsx';
 import { puffCount } from '../lib/catalogue.js';
-import { useReveal } from '../lib/useScrollFx.js';
 
 const puffRanges = {
   all: ['All puffs', () => true],
@@ -37,21 +36,11 @@ export default function Shop({ products, status, onOpen, onAdd }) {
   }, [products, q, brand, puffs, sort]);
 
   const filtersOn = q || brand !== 'all' || puffs !== 'all';
-  const headRef = useReveal();
   const countFor = (b) => (b === 'all' ? products.length : products.filter((p) => p.brand === b).length);
 
   return (
-    <section id="shop" className="section" aria-labelledby="shop-title">
+    <section id="shop" className="section section--shop" aria-label="Products">
       <div className="container">
-        <div className="section__head section__head--split" ref={headRef} data-reveal>
-          <div>
-            <p className="section__index mono">(02) Shop</p>
-            <h2 id="shop-title" className="section__title">The range</h2>
-          </div>
-          <p className="section__aside">
-            Pick a flavour, add it to your cart and send the order on WhatsApp. The owner confirms stock and delivery with you before anything is paid.
-          </p>
-        </div>
 
         {brands.length > 1 && (
           <div className="chips" role="group" aria-label="Filter by brand">
