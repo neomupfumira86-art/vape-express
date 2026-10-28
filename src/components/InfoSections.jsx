@@ -2,6 +2,7 @@ import { business, delivery, CONFIRM } from '../config.js';
 import { waLink } from '../lib/whatsapp.js';
 import { WhatsAppIcon, InstagramIcon, ArrowIcon } from './Icons.jsx';
 import Smoke from './Smoke.jsx';
+import { useReveal } from '../lib/useScrollFx.js';
 
 const steps = [
   ['Choose', 'Browse the range, pick a flavour and add it to your cart.'],
@@ -10,8 +11,9 @@ const steps = [
 ];
 
 export function SectionHeader({ index, title, id, children, inverse = false }) {
+  const ref = useReveal();
   return (
-    <div className="section__head section__head--split">
+    <div className="section__head section__head--split" ref={ref} data-reveal>
       <div>
         <p className={`section__index mono ${inverse ? 'section__index--inverse' : ''}`}>{index}</p>
         <h2 id={id} className="section__title">{title}</h2>
@@ -60,7 +62,6 @@ export function Delivery() {
   ];
   return (
     <section id="delivery" className="section" aria-labelledby="delivery-title">
-      <Smoke tone="dark" density={2} />
       <div className="container">
         <SectionHeader index="(04) Delivery" title={`Delivered around ${business.city}.`} id="delivery-title">
           {delivery.area} Send your area on WhatsApp and we’ll confirm the details for your order.
@@ -80,11 +81,12 @@ export function Delivery() {
 }
 
 export function Contact() {
+  const ref = useReveal();
   return (
     <section id="contact" className="section section--contact" aria-labelledby="contact-title">
       <div className="container">
         <p className="section__index mono">(05) Contact</p>
-        <h2 id="contact-title" className="contact__title">Questions? Message us.</h2>
+        <h2 id="contact-title" className="contact__title" ref={ref} data-reveal>Questions? Message us.</h2>
         <div className="contact__links">
           <a className="contact__big" href={waLink('Hi Vape Express, I have a question.')} target="_blank" rel="noopener">
             <span className="mono">WhatsApp</span>

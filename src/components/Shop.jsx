@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import ProductCard from './ProductCard.jsx';
 import { SearchIcon } from './Icons.jsx';
 import { puffCount } from '../lib/catalogue.js';
-import Smoke from './Smoke.jsx';
+import { useReveal } from '../lib/useScrollFx.js';
 
 const puffRanges = {
   all: ['All puffs', () => true],
@@ -37,12 +37,13 @@ export default function Shop({ products, status, onOpen, onAdd }) {
   }, [products, q, brand, puffs, sort]);
 
   const filtersOn = q || brand !== 'all' || puffs !== 'all';
+  const headRef = useReveal();
+  const countFor = (b) => (b === 'all' ? products.length : products.filter((p) => p.brand === b).length);
 
   return (
     <section id="shop" className="section" aria-labelledby="shop-title">
-      <Smoke tone="dark" density={2} />
       <div className="container">
-        <div className="section__head section__head--split">
+        <div className="section__head section__head--split" ref={headRef} data-reveal>
           <div>
             <p className="section__index mono">(02) Shop</p>
             <h2 id="shop-title" className="section__title">The range</h2>
@@ -52,21 +53,23 @@ export default function Shop({ products, status, onOpen, onAdd }) {
           </p>
         </div>
 
+        {brands.length > 1 && (
+          <div className="chips" role="group" aria-label="Filter by brand">
+            {['all', ...brands].map((b) => (
+              <button key={b} type="button" className="chip" aria-pressed={brand === b} onClick={() => setBrand(b)}>
+                {b === 'all' ? 'All products' : b}
+                <span className="chip__n">{String(countFor(b)).padStart(2, '0')}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
         <div className="filters" role="search">
           <label className="search">
             <span className="sr-only">Search products or flavours</span>
             <SearchIcon />
             <input type="search" placeholder="Search products or flavours" value={q} onChange={(e) => setQ(e.target.value)} />
           </label>
-          {brands.length > 1 && (
-            <label className="filters__item">
-              <span className="sr-only">Brand</span>
-              <select className="select" value={brand} onChange={(e) => setBrand(e.target.value)}>
-                <option value="all">All brands</option>
-                {brands.map((b) => <option key={b}>{b}</option>)}
-              </select>
-            </label>
-          )}
           <label className="filters__item">
             <span className="sr-only">Puff count</span>
             <select className="select" value={puffs} onChange={(e) => setPuffs(e.target.value)}>

@@ -467,3 +467,84 @@ body.is-intro .hero * { animation-play-state: paused !important; }
 .intro__plume--r { right: 0; top: 30%; animation: plumeR 2.4s var(--ease) 0.25s both; }
 @keyframes plumeL { from { opacity: 0; transform: translateX(-60%); } to { opacity: 0.55; transform: translateX(0); } }
 @keyframes plumeR { from { opacity: 0; transform: translateX(60%) scaleX(-1); } to { opacity: 0.5; transform: translateX(0) scaleX(-1); } }
+
+/* ── Wayfinding: progress bar, active section, back to top ── */
+.header__progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--blue); transform: scaleX(var(--progress, 0)); transform-origin: left; pointer-events: none; }
+.header__nav a, .header__subnav a { position: relative; padding: 6px 0; }
+.header__nav a.is-active, .header__subnav a.is-active { color: var(--blue-ink); }
+.header__nav a.is-active::after, .header__subnav a.is-active::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--blue-ink); }
+.totop { position: fixed; right: 24px; bottom: 24px; z-index: 30; width: 48px; height: 48px; display: none; place-items: center; background: var(--ink); color: var(--text-inv); border: 1px solid var(--rule-inv); opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity 0.3s, transform 0.3s var(--ease); }
+.is-scrolled .totop { opacity: 1; transform: none; pointer-events: auto; }
+.totop:hover { background: var(--blue); color: var(--ink); }
+
+/* ── Brand quick-filter chips ── */
+.chips { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 20px; margin-bottom: 4px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 16px; border: 1px solid var(--rule-strong); border-radius: 999px; background: transparent; color: var(--text); font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
+.chip:hover { background: var(--white); }
+.chip[aria-pressed='true'] { background: var(--ink); color: var(--text-inv); }
+.chip__n { color: var(--blue-ink); }
+.chip[aria-pressed='true'] .chip__n { color: var(--blue); }
+.filters { grid-template-columns: 1fr 1fr; }
+
+/* ── Brand ticker ── */
+.ticker { position: relative; z-index: 1; overflow: hidden; background: var(--blue); color: var(--ink); border-block: 1px solid var(--ink); }
+.ticker__track { display: flex; width: max-content; padding: 18px 0; }
+.ticker__item { display: inline-flex; align-items: center; gap: 28px; padding-right: 28px; font-family: var(--display); font-stretch: 125%; font-weight: 800; font-size: clamp(1.3rem, 4vw, 2.5rem); line-height: 1; text-transform: uppercase; letter-spacing: -0.02em; white-space: nowrap; }
+.ticker__dot { width: 0.32em; height: 0.32em; border-radius: 50%; background: var(--ink); }
+@media (prefers-reduced-motion: no-preference) {
+  .ticker__track { animation: tick 38s linear infinite; }
+  .ticker:hover .ticker__track { animation-play-state: paused; }
+}
+@keyframes tick { to { transform: translateX(-50%); } }
+
+/* ── Page-wide scroll smoke ──
+   --i: 0 at rest → 1 at fast scroll (set by useScrollFx); plumes billow in from the
+   edges and fade back as it decays. White over dark sections, soft grey over light. */
+.smoke-trail { --i: 0; --k: 1; --base: 0.1; --peak: 0.62; --reach: 46%; --hide: 72%; position: fixed; inset: 0; z-index: 25; overflow: hidden; pointer-events: none; display: none; }
+.fx .smoke-trail { display: block; }
+.smoke-trail[data-tone='light'] { --k: 0.38; --base: 0; --reach: 16%; --hide: 82%; }
+.smoke-trail__p { position: absolute; width: clamp(300px, 48vw, 820px); opacity: calc((var(--base) + var(--i) * var(--peak)) * var(--k)); will-change: transform, opacity; transition: opacity 0.25s linear; }
+.smoke-trail__p img { display: block; width: 100%; height: auto; }
+.smoke-trail[data-tone='light'] .smoke-trail__p img { filter: brightness(0.1); }
+.smoke-trail__p--l { left: 0; transform: translate3d(calc(var(--hide) * -1 + var(--reach) * var(--i)), 0, 0); }
+.smoke-trail__p--r { right: 0; transform: translate3d(calc(var(--hide) - var(--reach) * var(--i)), 0, 0) scaleX(-1); }
+.smoke-trail__p--a { top: 6%; }
+.smoke-trail__p--b { top: 26%; }
+.smoke-trail__p--c { top: 58%; width: clamp(260px, 40vw, 700px); }
+.smoke-trail__p--d { top: 70%; width: clamp(260px, 42vw, 720px); }
+.smoke-trail__p img { animation: smokeDrift 18s ease-in-out infinite; transform-origin: 0 50%; }
+.smoke-trail__p--b img { animation-duration: 23s; animation-delay: -7s; }
+.smoke-trail__p--c img { animation-duration: 20s; animation-delay: -12s; }
+.smoke-trail__p--d img { animation-duration: 26s; animation-delay: -4s; }
+body.is-intro .smoke-trail { visibility: hidden; }
+
+/* ── Reveal on scroll (only when motion is allowed; see useReveal) ── */
+.fx [data-reveal] { opacity: 0; transform: translateY(20px); transition: opacity 0.55s var(--ease), transform 0.55s var(--ease); }
+.fx [data-reveal].is-in { opacity: 1; transform: none; }
+
+/* ── Mobile quick-action bar ── */
+.mbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding-bottom: env(safe-area-inset-bottom); background: var(--ink); border-top: 1px solid var(--rule-inv); }
+.mbar a, .mbar button { display: grid; justify-items: center; align-content: center; gap: 4px; min-height: 62px; padding: 6px 4px; border: 0; background: none; color: var(--text-inv-2); text-decoration: none; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; }
+.mbar a span, .mbar button span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.mbar .is-active { color: var(--blue); }
+.mbar__cart.has-items { background: var(--blue); color: var(--ink); }
+.mbar .wa-icon { color: #3ccf78; }
+body { padding-bottom: calc(62px + env(safe-area-inset-bottom)); }
+.fab { display: none; }
+.footer { padding-bottom: 48px; }
+.toast { bottom: calc(76px + env(safe-area-inset-bottom)); right: 16px; }
+
+@media (min-width: 600px) {
+  .filters { grid-template-columns: 2fr 1fr 1fr; }
+}
+@media (min-width: 1000px) {
+  .mbar { display: none; }
+  body { padding-bottom: 0; }
+  .toast { bottom: 24px; right: 88px; }
+  .totop { display: grid; }
+}
+@media (max-width: 599px) {
+  .smoke-trail { --peak: 0.42; }
+  .smoke-trail__p { width: 78vw; }
+}

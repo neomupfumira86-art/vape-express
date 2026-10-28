@@ -1,12 +1,10 @@
 import Logo from './Logo.jsx';
 import { business, nicotineWarning } from '../config.js';
 import { waLink } from '../lib/whatsapp.js';
-import Smoke from './Smoke.jsx';
 
 export default function Footer() {
   return (
     <footer className="footer">
-      <Smoke density={2} />
       <div className="container">
         <p className="warning" role="note">{nicotineWarning}</p>
         <div className="footer__grid">

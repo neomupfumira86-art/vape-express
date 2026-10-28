@@ -7,12 +7,14 @@ import ProductModal from './components/ProductModal.jsx';
 import CartDrawer from './components/CartDrawer.jsx';
 import { HowItWorks, Delivery, Contact } from './components/InfoSections.jsx';
 import Footer from './components/Footer.jsx';
-import { WhatsAppIcon } from './components/Icons.jsx';
+import { ArrowIcon } from './components/Icons.jsx';
 import { loadCatalogue } from './lib/catalogue.js';
 import { useCart } from './lib/useCart.js';
-import { waLink } from './lib/whatsapp.js';
 import Intro from './components/Intro.jsx';
-import { useScrollSmoke } from './lib/useScrollSmoke.js';
+import { useScrollFx } from './lib/useScrollFx.js';
+import SmokeTrail from './components/SmokeTrail.jsx';
+import MobileBar from './components/MobileBar.jsx';
+import Ticker from './components/Ticker.jsx';
 
 const AGE_KEY = 'vx-age-ok';
 const readAge = () => { try { return localStorage.getItem(AGE_KEY) === 'yes'; } catch { return false; } };
@@ -39,7 +41,7 @@ export default function App() {
     document.body.classList.toggle('is-intro', showIntro);
   }, [showIntro]);
 
-  useScrollSmoke([adult, status]);
+  const activeSection = useScrollFx([adult, status]);
 
   function endIntro() {
     try { sessionStorage.setItem(INTRO_KEY, 'yes'); } catch { /* fine */ }
@@ -72,6 +74,8 @@ export default function App() {
 
   const featured = products.find((p) => p.featured) ?? products[0];
   const hasSamples = products.some((p) => p.sample);
+  const brands = [...new Set(products.map((p) => p.brand).filter(Boolean))];
+  const tickerItems = [...brands, 'Delivered around Harare', 'Order on WhatsApp', 'Adults 18+'];
 
   return (
     <>
@@ -82,9 +86,11 @@ export default function App() {
           Preview: this store is showing <strong>sample products</strong>. Replace <code>public/products.json</code> before launch.
         </div>
       )}
-      <Header count={cart.count} onCart={() => setCartOpen(true)} />
+      <Header count={cart.count} onCart={() => setCartOpen(true)} active={activeSection} />
+      <SmokeTrail />
       <main>
         <Hero featured={featured} products={products} />
+        {status === 'ready' && <Ticker items={tickerItems} />}
         <Shop products={products} status={status} onOpen={setActive} onAdd={add} />
         <HowItWorks />
         <Delivery />
@@ -95,8 +101,9 @@ export default function App() {
       <ProductModal product={active} onClose={() => setActive(null)} onAdd={add} />
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} cart={cart} />
 
-      <a className="fab" href={waLink('Hi Vape Express, I would like to place an order.')} target="_blank" rel="noopener" aria-label="Order on WhatsApp">
-        <WhatsAppIcon width={26} height={26} className="wa-icon" />
+      <MobileBar active={activeSection} count={cart.count} total={cart.total} onCart={() => setCartOpen(true)} />
+      <a className="totop" href="#top" aria-label="Back to top">
+        <ArrowIcon style={{ transform: 'rotate(-90deg)' }} />
       </a>
 
       <div className="toast" role="status" aria-live="polite">

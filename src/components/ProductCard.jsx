@@ -3,6 +3,7 @@ import { money } from '../lib/format.js';
 import { puffLabel, nicotineSummary } from '../lib/catalogue.js';
 import { waLink, productEnquiry } from '../lib/whatsapp.js';
 import { WhatsAppIcon, ArrowIcon } from './Icons.jsx';
+import { useReveal } from '../lib/useScrollFx.js';
 
 // One entry in the numbered product index (editorial row, not a card grid).
 export default function ProductCard({ product, index, onOpen, onAdd, eager = false }) {
@@ -12,9 +13,10 @@ export default function ProductCard({ product, index, onOpen, onAdd, eager = fal
   const soldOut = product.flavours.every((f) => !f.available);
   const selectId = `flv-${product.id}`;
   const specs = [puffLabel(product), nicotineSummary(product)].filter(Boolean);
+  const ref = useReveal();
 
   return (
-    <article className="item">
+    <article className="item" ref={ref} data-reveal>
       <span className="item__num mono" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
 
       <button className="item__media" onClick={() => onOpen(product)} aria-label={`View details for ${product.name}`}>

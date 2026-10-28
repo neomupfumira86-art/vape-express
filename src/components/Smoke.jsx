@@ -1,5 +1,5 @@
 // Decorative smoke plumes that roll in from the left and right edges of a section.
-// Drop <Smoke /> inside any `position: relative` section; useScrollSmoke() (App) feeds
+// Drop <Smoke /> inside any `position: relative` section; useScrollFx() (App) feeds
 // each one a 0→1 scroll progress as --p, and CSS turns that into slide/drift/opacity.
 const plumes = [
   { src: '/fx/smoke-1.webp', side: 'l', cls: 'smoke__plume--a' },
