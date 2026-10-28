@@ -4,7 +4,7 @@ import { SearchIcon } from './Icons.jsx';
 import { puffCount } from '../lib/catalogue.js';
 
 const puffRanges = {
-  all: ['All puff counts', () => true],
+  all: ['All puffs', () => true],
   low: ['Up to 10,000 puffs', (n) => n != null && n <= 10000],
   mid: ['10,000–30,000 puffs', (n) => n != null && n > 10000 && n <= 30000],
   high: ['Over 30,000 puffs', (n) => n != null && n > 30000],
@@ -44,7 +44,7 @@ export default function Shop({ products, status, onOpen, onAdd }) {
         {highlights.length > 0 && (
           <div className="featured">
             <div className="section__head">
-              <p className="eyebrow">Featured &amp; new stock</p>
+              <p className="label">Featured &amp; new stock</p>
               <h2 className="section__title">Top picks</h2>
             </div>
             <div className="rail" role="list">
@@ -58,7 +58,7 @@ export default function Shop({ products, status, onOpen, onAdd }) {
         )}
 
         <div className="section__head">
-          <p className="eyebrow">Catalogue</p>
+          <p className="label">Catalogue</p>
           <h2 id="shop-title" className="section__title">Shop the range</h2>
         </div>
 
@@ -111,7 +111,7 @@ export default function Shop({ products, status, onOpen, onAdd }) {
           <div className="empty">
             <p>No products match that search.</p>
             {filtersOn && (
-              <button className="btn btn--ghost" onClick={() => { setQ(''); setBrand('all'); setPuffs('all'); }}>
+              <button className="btn btn--secondary" onClick={() => { setQ(''); setBrand('all'); setPuffs('all'); }}>
                 Clear filters
               </button>
             )}

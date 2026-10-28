@@ -73,7 +73,7 @@ export default function App() {
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} cart={cart} />
 
       <a className="fab" href={waLink('Hi Vape Express, I would like to place an order.')} target="_blank" rel="noopener" aria-label="Order on WhatsApp">
-        <WhatsAppIcon width={26} height={26} />
+        <WhatsAppIcon width={26} height={26} className="wa-icon" />
       </a>
 
       <div className="toast" role="status" aria-live="polite">

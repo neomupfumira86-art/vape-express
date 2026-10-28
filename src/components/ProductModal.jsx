@@ -67,8 +67,8 @@ export default function ProductModal({ product, onClose, onAdd }) {
             </fieldset>
             {anyNicotine && <p className="small muted">Nicotine strength shown next to each flavour.</p>}
 
-            <a className="btn btn--whatsapp btn--block" href={waLink(productEnquiry(p, flavour))} target="_blank" rel="noopener">
-              <WhatsAppIcon /> Ask about this on WhatsApp
+            <a className="btn btn--secondary btn--block" href={waLink(productEnquiry(p, flavour))} target="_blank" rel="noopener">
+              <WhatsAppIcon className="wa-icon" /> Ask about this on WhatsApp
             </a>
           </div>
         </div>

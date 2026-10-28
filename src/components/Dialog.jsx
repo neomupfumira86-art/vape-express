@@ -25,7 +25,7 @@ export default function Dialog({ open, onClose, title, variant = 'modal', childr
         <div className="dialog__inner">
           <div className="dialog__head">
             <h2 id="dialog-title" className="dialog__title">{title}</h2>
-            <button className="btn btn--icon btn--ghost" onClick={onClose} aria-label="Close">
+            <button className="btn btn--icon btn--secondary" onClick={onClose} aria-label="Close">
               <CloseIcon />
             </button>
           </div>

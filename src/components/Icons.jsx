@@ -18,6 +18,21 @@ export const WhatsAppIcon = (p) => (
 export const InstagramIcon = (p) => (
   <svg {...base} {...p}><rect x="3.5" y="3.5" width="17" height="17" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.2" cy="6.8" r=".6" fill="currentColor" /></svg>
 );
+export const PinIcon = (p) => (
+  <svg {...base} {...p}><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" /><circle cx="12" cy="10" r="2.3" /></svg>
+);
+export const ChatIcon = (p) => (
+  <svg {...base} {...p}><path d="M4.5 18.5 5.6 15A7.5 7.5 0 1 1 9 18.4l-4.5.1Z" /></svg>
+);
+export const ShieldIcon = (p) => (
+  <svg {...base} {...p}><path d="M12 3.5 5 6v5.5c0 4.2 2.9 7.6 7 9 4.1-1.4 7-4.8 7-9V6l-7-2.5Z" /><path d="m9.2 12 2 2 3.6-3.8" /></svg>
+);
+export const InfoIcon = (p) => (
+  <svg {...base} {...p}><circle cx="12" cy="12" r="8.5" /><path d="M12 11v5M12 8h.01" /></svg>
+);
+export const ArrowIcon = (p) => (
+  <svg {...base} {...p}><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+);
 export const MinusIcon = (p) => (
   <svg {...base} {...p}><path d="M6 12h12" /></svg>
 );

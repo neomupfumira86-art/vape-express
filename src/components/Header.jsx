@@ -13,7 +13,7 @@ export default function Header({ count, onCart }) {
     <header className="header">
       <div className="container header__inner">
         <a href="#top" className="header__brand" aria-label="Vape Express — back to top">
-          <Logo height={48} />
+          <Logo height={44} />
         </a>
         <nav aria-label="Main" className="header__nav">
           {links.map(([href, label]) => (

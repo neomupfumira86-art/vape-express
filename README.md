@@ -11,7 +11,7 @@ A mobile-first store for Vape Express (Harare). Customers browse products, pick 
 - **Catalogue:** 6 products from the client brief (`public/products.json`): Tropic Bar 30K, Tropic Bar Ultra, Oxbar Dualblend, Life Pod Eco Kit, Life Pod Eco Pro Pod and Tropic Bar Blast Pod, with every flavour, price, puff count and nicotine value exactly as supplied.
 - **Logo:** `public/brand/logo.webp`, cut from the supplied logo file with the Instagram story ring masked off. It's only 242px wide, which is sharp up to about 120px on screen. **Ask the owner for the original high-resolution logo file** and drop it in with the same name.
 - **Product photos:** `public/images/*.webp`, cropped from the Instagram post graphics. The price, logo and Instagram on-screen UI (cursor arrow, notification badge) were removed so the site can show live prices. The Tropic Bar 30K image and hero use the higher-resolution post the owner sent. Clean studio product shots would look better; replace any file with the same name when available.
-- **Brand colours:** taken from the logo: navy-black `#050A14`, electric blue `#1E9BFF`, ice cyan `#6AD7F8`, deep blue `#103B7C`, plus restrained magenta `#FF3D9A` from the brief.
+- **Design:** light, editorial layout (ClientFlow design system) in the Vape Express brand: deep navy `#0A1A33`, brand blue `#1E9BFF` for rules and step numbers, darker blue `#0B63C4` for buttons and links (AA contrast), pale canvas `#F4F6FA`. Headings use Sora, body text Inter. All tokens are at the top of `src/styles.css`.
 
 ## Updating products, prices and flavours
 
