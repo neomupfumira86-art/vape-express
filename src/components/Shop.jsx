@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import ProductCard from './ProductCard.jsx';
 import { SearchIcon } from './Icons.jsx';
 import { puffCount } from '../lib/catalogue.js';
+import { waLink } from '../lib/whatsapp.js';
 
 const puffRanges = {
   all: ['All puffs', () => true],
@@ -18,7 +19,7 @@ const sorts = {
   name: (a, b) => a.name.localeCompare(b.name),
 };
 
-export default function Shop({ products, status, onOpen, onAdd }) {
+export default function Shop({ products, status, onOpen, onAdd, onRetry }) {
   const [q, setQ] = useState('');
   const [brand, setBrand] = useState('all');
   const [puffs, setPuffs] = useState('all');
@@ -78,10 +79,24 @@ export default function Shop({ products, status, onOpen, onAdd }) {
         </div>
 
         <p className="filters__count mono" aria-live="polite">
-          {status === 'loading' ? 'Loading products…' : `${shown.length} product${shown.length === 1 ? '' : 's'}`}
+          {status === 'loading' ? 'Loading products…' : status === 'error' ? '' : `${shown.length} product${shown.length === 1 ? '' : 's'}`}
         </p>
 
-        {status === 'error' && <p className="notice">We couldn’t load the catalogue. Please refresh, or order directly on WhatsApp.</p>}
+        {status === 'error' && (
+          <div className="notice notice--action" role="alert">
+            <p>We couldn’t load the products just now. Check your connection and try again, or message us and we’ll help you order.</p>
+            <div className="notice__actions">
+              <button type="button" className="btn btn--ink" onClick={onRetry}>Try again</button>
+              <a className="btn btn--line" href={waLink('Hi Vape Express, I would like to place an order.')} target="_blank" rel="noopener">Order on WhatsApp</a>
+            </div>
+          </div>
+        )}
+        {status === 'stale' && (
+          <p className="notice" role="status">
+            We’re having trouble reaching the store right now, so you’re seeing the last saved list. Prices and stock are confirmed on WhatsApp before anything is final.{' '}
+            <button type="button" className="linkbtn" onClick={onRetry}>Refresh</button>
+          </p>
+        )}
 
         <div className="index">
           {shown.map((p, i) => (
@@ -89,7 +104,7 @@ export default function Shop({ products, status, onOpen, onAdd }) {
           ))}
         </div>
 
-        {status === 'ready' && shown.length === 0 && (
+        {(status === 'ready' || status === 'stale') && shown.length === 0 && (
           <div className="empty">
             <p>No products match that search.</p>
             {filtersOn && (

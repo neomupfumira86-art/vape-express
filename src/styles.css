@@ -669,3 +669,8 @@ html.has-dialog { overflow: hidden; }
   .hero__feature-text { padding: 0 6px 6px; }
   .hero__feature-arrow { align-self: end; margin: 0 6px 10px 0; }
 }
+
+/* ── Catalogue load failure ─────────────────── */
+.notice--action { display: grid; gap: 14px; margin-bottom: 20px; }
+.notice--action p { margin: 0; color: var(--text); font-size: 0.95rem; }
+.notice__actions { display: flex; flex-wrap: wrap; gap: 10px; }

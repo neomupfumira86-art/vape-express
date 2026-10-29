@@ -43,6 +43,9 @@ export function useCart() {
       clear() {
         setItems([]);
       },
+      replace(next) {
+        setItems(next);
+      },
     };
   }, []);
 
@@ -53,10 +56,22 @@ export function useCart() {
   return { items, count, total, hasUnpriced, ...api };
 }
 
-// Keeps the product catalogue in sync with any cart prices that changed since the visit was saved.
-export function syncPrices(items, products) {
-  return items.map((i) => {
+// Brings a saved cart in line with the live catalogue: current names, images and
+// prices, and drops lines whose product is hidden/deleted or whose flavour is sold out.
+export function reconcileCart(items, products) {
+  let removed = 0;
+  let changed = false;
+  const next = [];
+  for (const i of items) {
     const p = products.find((x) => x.id === i.id);
-    return p ? { ...i, price: p.price, name: p.name, image: p.image } : i;
-  });
+    const f = p?.flavours.find((x) => x.name === i.flavour);
+    if (!p || !f?.available) {
+      removed += 1;
+      changed = true;
+      continue;
+    }
+    if (i.price !== p.price || i.name !== p.name || i.image !== p.image) changed = true;
+    next.push({ ...i, price: p.price, name: p.name, image: p.image });
+  }
+  return { items: next, removed, changed };
 }

@@ -7,7 +7,6 @@ import { navigate } from '../lib/router.jsx';
 import { paymentMethods } from '../config.js';
 import { WhatsAppIcon } from './Icons.jsx';
 
-const methods = paymentMethods.filter((m) => m.enabled);
 const empty = { name: '', phone: '', address: '', note: '', payment: '' };
 const required = ['name', 'phone', 'address', 'payment'];
 
@@ -21,6 +20,8 @@ function validate(f) {
 }
 
 export default function CartDrawer({ open, onClose, cart }) {
+  // Read on render: payment options can change from the admin dashboard.
+  const methods = paymentMethods.filter((m) => m.enabled);
   const [step, setStep] = useState('cart');
   const [form, setForm] = useState(empty);
   const [touched, setTouched] = useState({});

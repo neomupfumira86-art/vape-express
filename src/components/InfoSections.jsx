@@ -73,7 +73,7 @@ export function PaymentInfo() {
             <li key={m.id}>
               <span className="mono paylist__n">{String(i + 1).padStart(2, '0')}</span>
               <span className="paylist__name">{m.label}</span>
-              <span className="tbc mono">Confirm with owner</span>
+              {!m.confirmed && <span className="tbc mono">Confirm with owner</span>}
             </li>
           ))}
         </ul>

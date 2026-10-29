@@ -15,8 +15,9 @@ import SmokeTrail from './components/SmokeTrail.jsx';
 import MobileBar from './components/MobileBar.jsx';
 import Ticker from './components/Ticker.jsx';
 import { ArrowIcon } from './components/Icons.jsx';
-import { loadCatalogue } from './lib/catalogue.js';
-import { useCart } from './lib/useCart.js';
+import { loadStore } from './lib/catalogue.js';
+import { applySettings } from './lib/settings.js';
+import { useCart, reconcileCart } from './lib/useCart.js';
 import { useScrollFx } from './lib/useScrollFx.js';
 import { usePath, PAGES } from './lib/router.jsx';
 import { business } from './config.js';
@@ -38,6 +39,7 @@ export default function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const [toast, setToast] = useState('');
   const [intro, setIntro] = useState(wantIntro);
+  const [attempt, setAttempt] = useState(0);
   const cart = useCart();
   const path = usePath();
   const showIntro = adult && intro;
@@ -60,11 +62,30 @@ export default function App() {
     setIntro(false);
   }
 
+  // Products and settings come from the database on every visit, so changes made
+  // in /admin show up without a redeploy.
   useEffect(() => {
-    loadCatalogue()
-      .then((list) => { setProducts(list); setStatus('ready'); })
-      .catch(() => setStatus('error'));
-  }, []);
+    let live = true;
+    setStatus('loading');
+    loadStore()
+      .then(({ products: list, settings, stale }) => {
+        if (!live) return;
+        applySettings(settings);
+        setProducts(list);
+        setStatus(stale ? 'stale' : 'ready');
+      })
+      .catch(() => live && setStatus('error'));
+    return () => { live = false; };
+  }, [attempt]);
+
+  // A saved cart may hold old prices or products that have since been hidden or sold out.
+  useEffect(() => {
+    if (status !== 'ready') return;
+    const { items, removed, changed } = reconcileCart(cart.items, products);
+    if (changed) cart.replace(items);
+    if (removed) setToast(`${removed} item${removed === 1 ? ' is' : 's are'} no longer available and ${removed === 1 ? 'was' : 'were'} removed from your cart`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, products]);
 
   useEffect(() => {
     if (!toast) return;
@@ -96,7 +117,7 @@ export default function App() {
         <PageHead index="02" label="Shop" title="The" accent="collection.">
           Every product, flavour and price in one place. Filter by brand, pick a flavour and add it to your cart — the owner confirms stock with you on WhatsApp.
         </PageHead>
-        <Shop products={products} status={status} onOpen={setActive} onAdd={add} />
+        <Shop products={products} status={status} onOpen={setActive} onAdd={add} onRetry={() => setAttempt((n) => n + 1)} />
         <OrderCta title="Need a hand choosing?" />
       </>
     );
@@ -134,7 +155,7 @@ export default function App() {
     page = (
       <>
         <Hero featured={featured} products={products} onOpen={setActive} />
-        {status === 'ready' && <Ticker items={tickerItems} />}
+        {products.length > 0 && <Ticker items={tickerItems} />}
         <HomePicks products={products} onOpen={setActive} onAdd={add} />
         <HowItWorks more />
         <OrderCta />

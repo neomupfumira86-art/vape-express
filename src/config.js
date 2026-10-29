@@ -1,8 +1,10 @@
 // ─────────────────────────────────────────────────────────────
-// Vape Express — site settings.
-// The owner can edit this file safely. Anything written as
-// '[CONFIRM WITH OWNER]' is shown on the site as a visible placeholder
-// until a real value is entered.
+// Vape Express — default site settings.
+// Once the admin dashboard is connected (see README), the contact details,
+// delivery terms and payment preferences saved in /admin replace these values
+// on the live site. They stay here as the fallback and as the one-time import.
+// Anything written as '[CONFIRM WITH OWNER]' is shown on the site as a visible
+// placeholder until a real value is entered.
 // ─────────────────────────────────────────────────────────────
 
 export const CONFIRM = '[CONFIRM WITH OWNER]';
@@ -22,13 +24,13 @@ export const business = {
 
 // Payment preferences shown at checkout. The website does NOT process payment;
 // this only tells the owner how the customer would like to pay.
-// Set `enabled: false` to hide a method. Every method still needs owner confirmation.
+// Set `enabled: false` to hide a method; `confirmed: true` removes the "Confirm with owner" tag.
 export const paymentMethods = [
-  { id: 'ecocash', label: 'EcoCash', enabled: true },
+  { id: 'ecocash', label: 'EcoCash', enabled: true, confirmed: false },
   // Owner wrote "Imbax" — assumed to mean InnBucks. Confirm spelling/provider before launch.
-  { id: 'innbucks', label: 'InnBucks', enabled: true },
-  { id: 'bank', label: 'Bank transfer', enabled: true },
-  { id: 'cash', label: 'USD cash on arrival', enabled: true },
+  { id: 'innbucks', label: 'InnBucks', enabled: true, confirmed: false },
+  { id: 'bank', label: 'Bank transfer', enabled: true, confirmed: false },
+  { id: 'cash', label: 'USD cash on arrival', enabled: true, confirmed: false },
 ];
 
 // Delivery and policy terms. Replace each CONFIRM value once the owner confirms it.
