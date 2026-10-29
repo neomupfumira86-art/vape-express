@@ -182,3 +182,16 @@
   .adm-card { padding: 24px; }
   .adm-auth__panel { padding: 36px 32px; }
 }
+
+/* sign-in / sign-up switcher */
+.adm-switcher { display: grid; grid-template-columns: 1fr 1fr; padding: 4px; background: var(--paper-2); border-radius: 8px; }
+.adm-switcher button { min-height: 44px; border: 0; border-radius: 6px; background: transparent; font-weight: 600; color: var(--text-2); cursor: pointer; }
+.adm-switcher button[aria-selected='true'] { background: var(--white); color: var(--text); box-shadow: 0 1px 3px rgba(11, 15, 23, 0.15); }
+
+/* team */
+.adm-people { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.adm-person { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding: 12px; border: 1px solid var(--rule); border-radius: 6px; background: #fafaf8; }
+.adm-person[aria-busy='true'] { opacity: 0.6; }
+.adm-person__email { margin: 0 0 2px; font-weight: 600; overflow-wrap: anywhere; }
+.adm-person .adm-hint { margin: 0; }
+.adm-card__title .adm-badge { vertical-align: middle; margin-left: 6px; }

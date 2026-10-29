@@ -22,7 +22,7 @@ A mobile-first store for Vape Express (Harare). Customers browse products, pick 
 | How to order | `/how-it-works` | The three steps and payment preferences (no online payment) |
 | Delivery | `/delivery` | Delivery terms (placeholders until the owner confirms) |
 | Contact | `/contact` | WhatsApp and Instagram |
-| Admin (owner only) | `/admin` | Sign-in, products, store settings. Not linked from the store and hidden from search engines |
+| Admin (owner only) | `/admin` | Sign in / sign up, products, store settings, team. Reached from the small **Admin only** link in the footer; hidden from search engines |
 
 The cart, checkout and product details work on every page. `vercel.json` sends every page address to the app, so direct links and refreshes work.
 
@@ -49,6 +49,10 @@ The owner manages products and store details at **`/admin`** (for example `https
 - **Private notes:** for the owner only. They are never shown on the website.
 - **Featured:** the first three featured products are the home page's "Top picks", and the first one is the hero product.
 
+**Team tab**
+- **Waiting for approval:** people who used **Sign up** on the admin page. **Approve** gives them full admin access; **Decline** deletes the account. Only approve people you know.
+- **Admins:** everyone with access. **Remove** takes access away straight away.
+
 **Store settings tab**
 - **WhatsApp order number:** every order and every WhatsApp button uses it. Tap the preview link after changing it to check it opens the right chat.
 - Instagram handle and link, and the tagline.
@@ -68,28 +72,28 @@ This is done once. After that, all updates happen in the dashboard.
 A Supabase project called **Vape Express** already exists in the ClientFlow Digital organisation (`sjbmemythyggokmesadh`, Frankfurt region). The database tables, security rules, image storage and current catalogue are already installed. To set up a **new** project from scratch instead:
 
 1. Create a project at [supabase.com](https://supabase.com) and open **SQL Editor**.
-2. Paste and run **`supabase/migrations/20261029000000_admin_dashboard.sql`**. This creates the tables, Row Level Security policies and the `product-images` storage bucket.
+2. Paste and run each file in **`supabase/migrations/`**, in name order, starting with `20261029000000_admin_dashboard.sql`. This creates the tables, Row Level Security policies and the `product-images` storage bucket.
 3. Paste and run **`supabase/seed.sql`**. This imports the six current products, all 30 flavours, the owner notes, contact details, delivery placeholders and payment options from `public/products.json` and `src/config.js`. It's safe to run twice; it never overwrites dashboard changes. If you edit `products.json` before importing, regenerate the file first with `node scripts/make-seed.mjs`.
 
 ### 2. Auth settings (Supabase → Authentication)
 
-- **Sign In / Providers → Email:** turn **off** "Allow new users to sign up". This is a second layer of protection; even with sign-ups on, a new account can't change anything unless it's listed as an admin.
-- **URL Configuration:** set **Site URL** to `https://vape-express.vercel.app` (or the custom domain), and add `https://vape-express.vercel.app/admin` to **Redirect URLs**. Invite and password-reset emails link back there.
-- Optional, for reliable emails: Supabase's built-in email sender only allows a few emails per hour. For a business, add your own SMTP under **Authentication → Emails → SMTP settings**.
+- **Sign In / Providers → Email:** leave "Allow new users to sign up" **on**. The admin page has a **Sign up** tab. New accounts have no rights and wait in **Team → Waiting for approval** until an existing admin approves them. This is enforced by the database, not the page.
+- **URL Configuration:** set **Site URL** to `https://vape-express.vercel.app` (or the custom domain), and add `https://vape-express.vercel.app/admin` to **Redirect URLs**. Confirmation and password-reset emails link back there.
+- Optional, for reliable emails: Supabase's built-in email sender only sends a few emails per hour, and only to members of the Supabase organisation. Add your own SMTP under **Authentication → Emails → SMTP settings** so password-reset emails reach the owner. Approval doesn't depend on email: approving an account also confirms it.
 
-### 3. Create the first admin
+### 3. The first admin
 
-1. **Authentication → Users → Add user**. Either choose **Send invitation** (the owner receives an email and chooses a password at `/admin`), or **Create new user** with an email and password and tick **Auto confirm user**.
-2. In **SQL Editor**, give that account admin rights (use the owner's real email):
+1. Open `/admin` (or tap **Admin only** at the bottom of any page), choose **Sign up**, and create the owner's account.
+2. Nobody can approve the very first account from the dashboard, so approve it once in **Supabase → SQL Editor**:
 
    ```sql
    insert into public.admins (user_id, email)
-   select id, email from auth.users where email = 'owner@example.com';
+   select user_id, email from public.admin_requests where email = 'owner@example.com';
+   update auth.users set email_confirmed_at = coalesce(email_confirmed_at, now()) where email = 'owner@example.com';
+   delete from public.admin_requests where email = 'owner@example.com';
    ```
 
-To remove an admin later: `delete from public.admins where email = 'owner@example.com';`. Deleting the user under Authentication → Users also removes them.
-
-There is no sign-up page. An account that signs in but isn't in `public.admins` sees "No admin access" and can't change anything.
+3. From then on, the owner approves or declines new sign-ups and removes people in the dashboard's **Team** tab. Admins can't remove themselves, so the store always keeps at least one.
 
 ### 4. Environment variables (Vercel)
 
@@ -121,8 +125,9 @@ Until the variables are set, the site keeps working exactly as before from `publ
 
 ## How security works
 
-- **Sign-in:** Supabase Auth with email and password. Sessions are kept in the browser and refreshed automatically. Password reset and invite links come back to `/admin`.
-- **Admin rights:** an account is an admin only if it's listed in `public.admins`. That list can only be changed from the Supabase SQL editor, never from the website.
+- **Sign-in:** Supabase Auth with email and password. Sessions are kept in the browser and refreshed automatically. Password-reset links come back to `/admin`.
+- **Sign-up needs approval:** anyone can create an account on `/admin`, but a database trigger files it as a request in `public.admin_requests`. It can't read hidden data or change anything until an admin approves it. Approve, decline and remove run as database functions that check the caller is an admin.
+- **Admin rights:** an account is an admin only if it's listed in `public.admins`. The website can't write to that list directly; only the approve/remove functions (admins only) or the SQL editor can change it.
 - **Row Level Security** on every table:
   - Anyone can read products marked visible, and the store settings.
   - Hidden products, owner notes and the admin list can't be read by the public.
@@ -185,7 +190,7 @@ src/lib/useCart.js            cart state in localStorage; reconcileCart() re-pri
 src/lib/whatsapp.js           wa.me links built with URLSearchParams; order message format
 src/components/               storefront: AgeGate, Header, Hero, Shop, ProductCard, ProductModal, CartDrawer, …
 src/admin/                    /admin (separate bundle): AdminApp (auth gate + routes), Auth, ProductList,
-                              ProductEditor, Settings, data.js (Supabase calls), admin.css
+                              ProductEditor, Settings, Team, data.js (Supabase calls), admin.css
 supabase/migrations/          schema, RLS policies, storage bucket + policies
 supabase/seed.sql             one-time import (generated by scripts/make-seed.mjs)
 ```

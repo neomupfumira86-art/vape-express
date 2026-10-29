@@ -5,16 +5,18 @@ import Logo from '../components/Logo.jsx';
 import ProductList from './ProductList.jsx';
 import ProductEditor from './ProductEditor.jsx';
 import Settings from './Settings.jsx';
+import Team from './Team.jsx';
 import { SignIn, SetPassword } from './Auth.jsx';
 import './admin.css';
 
-// Admin pages: /admin, /admin/products/new, /admin/products/:id, /admin/settings
+// Admin pages: /admin, /admin/products/new, /admin/products/:id, /admin/settings, /admin/team
 function useAdminRoute() {
   const read = () => {
     const { pathname, search } = window.location;
     const path = pathname.replace(/\/+$/, '') || '/admin';
     const m = path.match(/^\/admin\/products\/([a-z0-9-]+)$/);
     if (path === '/admin/settings') return { page: 'settings' };
+    if (path === '/admin/team') return { page: 'team' };
     if (m?.[1] === 'new') return { page: 'new', from: new URLSearchParams(search).get('from') };
     if (m) return { page: 'edit', id: m[1] };
     return { page: 'list' };
@@ -53,7 +55,7 @@ export default function AdminApp() {
 
 function Gate() {
   const [session, setSession] = useState(undefined); // undefined = still checking
-  const [access, setAccess] = useState('checking'); // checking | admin | denied | error
+  const [access, setAccess] = useState('checking'); // checking | admin | pending | denied | error
   const [needsPassword, setNeedsPassword] = useState(Boolean(arrivedVia));
   const [toast, setToast] = useState(null);
   const route = useAdminRoute();
@@ -80,12 +82,14 @@ function Gate() {
     if (!uid) return;
     let live = true;
     setAccess('checking');
-    supabase
-      .from('admins')
-      .select('user_id')
-      .eq('user_id', uid)
-      .maybeSingle()
-      .then(({ data, error }) => live && setAccess(error ? 'error' : data ? 'admin' : 'denied'));
+    Promise.all([
+      supabase.from('admins').select('user_id').eq('user_id', uid).maybeSingle(),
+      supabase.from('admin_requests').select('user_id').eq('user_id', uid).maybeSingle(),
+    ]).then(([a, r]) => {
+      if (!live) return;
+      if (a.error) return setAccess('error');
+      setAccess(a.data ? 'admin' : r.data ? 'pending' : 'denied');
+    });
     return () => { live = false; };
   }, [uid]);
 
@@ -104,14 +108,16 @@ function Gate() {
       <main className="adm-auth">
         <div className="adm-auth__panel">
           <Logo height={56} />
-          <h1 className="adm-auth__title">{access === 'error' ? 'Couldn’t check access' : 'No admin access'}</h1>
+          <h1 className="adm-auth__title">{{ error: 'Couldn’t check access', pending: 'Waiting for approval', denied: 'No admin access' }[access]}</h1>
           <p className="adm-muted">
             {access === 'error'
               ? 'We couldn’t reach the database to check this account. Check your connection and reload the page.'
-              : `${session.user.email} is signed in, but it isn’t an admin account for this store. Ask the site administrator to add it.`}
+              : access === 'pending'
+                ? `Your account (${session.user.email}) has been created. An existing admin needs to approve it in the Team tab before you can manage the store. Check back here afterwards.`
+                : `${session.user.email} is signed in, but it isn’t an admin account for this store. Ask the store admin to approve it.`}
           </p>
           <div className="adm-row">
-            {access === 'error' && <button className="btn btn--ink" onClick={() => window.location.reload()}>Reload</button>}
+            {access !== 'denied' && <button className="btn btn--ink" onClick={() => window.location.reload()}>{access === 'pending' ? 'Check again' : 'Reload'}</button>}
             <button className="btn btn--line" onClick={signOut}>Sign out</button>
             <a className="btn btn--line" href="/">View store</a>
           </div>
@@ -120,7 +126,7 @@ function Gate() {
     );
   }
 
-  const tab = route.page === 'settings' ? 'settings' : 'products';
+  const tab = route.page === 'settings' || route.page === 'team' ? route.page : 'products';
   return (
     <div className="adm">
       <header className="adm-head">
@@ -137,6 +143,7 @@ function Gate() {
         <nav className="adm-wrap adm-tabs" aria-label="Admin sections">
           <a href="/admin" aria-current={tab === 'products' ? 'page' : undefined} onClick={(e) => { e.preventDefault(); go('/admin'); }}>Products</a>
           <a href="/admin/settings" aria-current={tab === 'settings' ? 'page' : undefined} onClick={(e) => { e.preventDefault(); go('/admin/settings'); }}>Store settings</a>
+          <a href="/admin/team" aria-current={tab === 'team' ? 'page' : undefined} onClick={(e) => { e.preventDefault(); go('/admin/team'); }}>Team</a>
         </nav>
       </header>
 
@@ -145,6 +152,7 @@ function Gate() {
         {route.page === 'new' && <ProductEditor key={`new-${route.from ?? ''}`} copyFrom={route.from} notify={notify} />}
         {route.page === 'edit' && <ProductEditor key={route.id} id={route.id} notify={notify} />}
         {route.page === 'settings' && <Settings notify={notify} />}
+        {route.page === 'team' && <Team notify={notify} me={session.user.id} />}
       </main>
       <p className="adm-wrap adm-foot mono">Signed in as {session.user.email}</p>
       <Toast toast={toast} />

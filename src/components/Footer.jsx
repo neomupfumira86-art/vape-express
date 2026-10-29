@@ -32,6 +32,8 @@ export default function Footer() {
         <div className="footer__legal mono">
           <span className="badge18" aria-hidden="true">18+</span>
           <p>Sales to adults aged 18 and over only. Prices in USD. © {new Date().getFullYear()} {business.name}.</p>
+          {/* Plain link (full page load): the admin area is a separate bundle. Access is protected by sign-in, not by hiding this. */}
+          <a className="footer__admin" href="/admin" rel="nofollow">Admin only</a>
         </div>
       </div>
     </footer>

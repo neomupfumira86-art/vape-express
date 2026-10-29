@@ -132,3 +132,17 @@ export async function getSettings() {
 export async function saveSettings(patch) {
   return check(await supabase.from('site_settings').update(patch).eq('id', 1).select().single());
 }
+
+// ── Team (admins + access requests) ───────────────────────────────────────────
+export async function getTeam() {
+  const [admins, requests] = await Promise.all([
+    supabase.from('admins').select('user_id,email,created_at').order('created_at'),
+    supabase.from('admin_requests').select('user_id,email,created_at').order('created_at'),
+  ]);
+  return { admins: check(admins), requests: check(requests) };
+}
+
+const rpc = async (fn, args) => check(await supabase.rpc(fn, args));
+export const approveRequest = (id) => rpc('approve_admin_request', { request_user: id });
+export const declineRequest = (id) => rpc('decline_admin_request', { request_user: id });
+export const removeAdmin = (id) => rpc('remove_admin', { admin_user: id });
