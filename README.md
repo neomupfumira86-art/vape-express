@@ -123,6 +123,28 @@ Until the variables are set, the site keeps working exactly as before from `publ
 
 ---
 
+## Hosting somewhere other than Vercel (cPanel, Hostinger, Netlify, …)
+
+The website is a set of ready-made files. It doesn't need Node, PHP or a database on your hosting. The **database, sign-in and photos stay on Supabase**, and the website talks to Supabase straight from the visitor's browser. So the store and the admin dashboard keep working wherever the files are hosted, as long as the files were **built with the two Supabase values** (see step 4 above).
+
+**Upload the ready-made files** (`vape-express-website-upload.zip`, or the `dist/` folder after `npm run build`):
+
+1. Unzip it on your computer.
+2. In your host's **File Manager**, open the website's root folder (usually `public_html`, or `htdocs` / `www`).
+3. Upload **everything inside** the unzipped folder: `index.html`, the `assets`, `images`, `brand`, `media` and `fx` folders, `products.json`, and the hidden **`.htaccess`** file. Upload the contents, not the folder itself.
+4. Open your domain. Then open `yourdomain.com/shop`: if it shows the shop rather than a "404" page, `.htaccess` is working.
+
+**Which settings file your host uses:**
+- **Apache, cPanel, Hostinger, LiteSpeed:** `.htaccess`. It sends page addresses like `/shop` and `/admin` to the app, forces HTTPS, and keeps `/admin` out of search engines. If you can't see it, turn on "Show hidden files".
+- **Netlify, Cloudflare Pages:** `_redirects` and `_headers`. Just drag the folder in.
+- **Nginx:** add `try_files $uri $uri/ /index.html;` to the site's `location /` block.
+
+**After moving to your own domain:**
+- In **Supabase → Authentication → URL Configuration**, set the **Site URL** to your domain and add `https://yourdomain.com/admin` to **Redirect URLs**. Sign-in works without this, but password-reset emails need it.
+- Update the address in `index.html` (search listing) if you want Google to show your domain.
+
+**To rebuild after changing code:** `npm install`, then `npm run build` with `.env.local` filled in (copy `.env.example`), then upload the new `dist/` contents. Product, price and settings changes **don't** need a rebuild; they're made in `/admin`.
+
 ## How security works
 
 - **Sign-in:** Supabase Auth with email and password. Sessions are kept in the browser and refreshed automatically. Password-reset links come back to `/admin`.

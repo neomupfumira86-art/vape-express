@@ -1,0 +1,42 @@
+# Vape Express — settings for Apache / cPanel / LiteSpeed hosting.
+# Upload this file together with index.html (it is hidden on Mac/Linux: show hidden files).
+
+Options -Indexes
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  # Force HTTPS (remove these two lines if your host already does this)
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # Page addresses (/shop, /delivery, /admin, ...) are handled by the app:
+  # serve index.html for anything that isn't a real file or folder.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Admin area: keep it out of search engines and other sites' frames, never cache it.
+  <If "%{REQUEST_URI} =~ m#^/admin#">
+    Header set X-Robots-Tag "noindex, nofollow"
+    Header set X-Frame-Options "DENY"
+    Header set Cache-Control "no-store"
+    Header set Referrer-Policy "same-origin"
+  </If>
+  # Built files have unique names, so they can be cached for a year.
+  <If "%{REQUEST_URI} =~ m#^/assets/#">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+  # Always check for a fresh page and product list.
+  <FilesMatch "(index\.html|products\.json)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_mime.c>
+  AddType image/webp .webp
+  AddType video/webm .webm
+  AddType video/mp4 .mp4
+</IfModule>
