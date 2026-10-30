@@ -116,7 +116,9 @@ export function SignIn() {
 }
 
 // Shown after an invite or password-reset link.
-export function SetPassword({ email, invited, onDone }) {
+// Shown after an invite/reset link, for a temporary password set by the site
+// administrator (must_change_password), or from "Change password" in the dashboard.
+export function SetPassword({ email, invited, temporary, onDone, onCancel }) {
   const [password, setPassword] = useState('');
   const [again, setAgain] = useState('');
   const [busy, setBusy] = useState(false);
@@ -128,7 +130,7 @@ export function SetPassword({ email, invited, onDone }) {
     if (password.length < 10) return setError('Use at least 10 characters.');
     if (password !== again) return setError('The two passwords don’t match.');
     setBusy(true);
-    const { error: err } = await supabase.auth.updateUser({ password });
+    const { error: err } = await supabase.auth.updateUser({ password, data: { must_change_password: false } });
     setBusy(false);
     if (err) return setError(/weak|pwned|leaked/i.test(err.message) ? 'That password is too easy to guess. Choose a longer one.' : friendly(err));
     onDone();
@@ -138,7 +140,8 @@ export function SetPassword({ email, invited, onDone }) {
     <main className="adm-auth">
       <form className="adm-auth__panel" onSubmit={submit} noValidate>
         <Logo height={56} />
-        <h1 className="adm-auth__title">{invited ? 'Welcome — choose a password' : 'Choose a new password'}</h1>
+        <h1 className="adm-auth__title">{invited ? 'Welcome — choose a password' : temporary ? 'Choose your own password' : 'Choose a new password'}</h1>
+        {temporary && <p className="adm-muted">You signed in with a temporary password. Choose your own now — the temporary one stops working once you save.</p>}
         <p className="adm-muted">For {email}. Use at least 10 characters; a short sentence is easy to remember and hard to guess.</p>
         <Field id="new-password" label="New password">
           {(a) => <input {...a} className="adm-input" type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} />}
@@ -148,6 +151,7 @@ export function SetPassword({ email, invited, onDone }) {
         </Field>
         {error && <p className="adm-alert" role="alert">{error}</p>}
         <button className="btn btn--ink btn--lg btn--block" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save password'}</button>
+        {onCancel && <button type="button" className="linkbtn" onClick={onCancel}>Cancel — keep my current password</button>}
       </form>
     </main>
   );

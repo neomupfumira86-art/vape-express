@@ -101,7 +101,18 @@ function Gate() {
 
   if (session === undefined) return <Splash text="Checking your sign-in…" />;
   if (!session) return <SignIn />;
-  if (needsPassword) return <SetPassword email={session.user.email} invited={arrivedVia === 'invite'} onDone={() => { setNeedsPassword(false); notify('Password saved'); }} />;
+  const temporary = Boolean(session.user.user_metadata?.must_change_password);
+  if (needsPassword || temporary) {
+    return (
+      <SetPassword
+        email={session.user.email}
+        invited={arrivedVia === 'invite'}
+        temporary={temporary}
+        onDone={() => { setNeedsPassword(false); notify('Password saved. Use it next time you sign in.'); }}
+        onCancel={needsPassword === 'change' ? () => setNeedsPassword(false) : undefined}
+      />
+    );
+  }
   if (access === 'checking') return <Splash text="Checking admin access…" />;
   if (access !== 'admin') {
     return (
@@ -154,7 +165,9 @@ function Gate() {
         {route.page === 'settings' && <Settings notify={notify} />}
         {route.page === 'team' && <Team notify={notify} me={session.user.id} />}
       </main>
-      <p className="adm-wrap adm-foot mono">Signed in as {session.user.email}</p>
+      <p className="adm-wrap adm-foot mono">
+        Signed in as {session.user.email} · <button className="linkbtn" onClick={() => { setNeedsPassword('change'); window.scrollTo(0, 0); }}>Change password</button>
+      </p>
       <Toast toast={toast} />
     </div>
   );

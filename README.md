@@ -93,7 +93,18 @@ A Supabase project called **Vape Express** already exists in the ClientFlow Digi
    delete from public.admin_requests where email = 'owner@example.com';
    ```
 
-3. From then on, the owner approves or declines new sign-ups and removes people in the dashboard's **Team** tab. Admins can't remove themselves, so the store always keeps at least one.
+3. Locked out? Set a temporary password in **SQL Editor** (pick your own value), and the owner is asked to choose their own the first time they sign in:
+
+   ```sql
+   update auth.users
+   set encrypted_password = extensions.crypt('Temporary-Password-123', extensions.gen_salt('bf', 10)),
+       raw_user_meta_data = coalesce(raw_user_meta_data, '{}') || '{"must_change_password": true}'
+   where email = 'owner@example.com';
+   ```
+
+   Signed-in admins can also change their password any time from **Change password** at the bottom of the dashboard.
+
+4. From then on, the owner approves or declines new sign-ups and removes people in the dashboard's **Team** tab. Admins can't remove themselves, so the store always keeps at least one.
 
 ### 4. Environment variables (Vercel)
 
