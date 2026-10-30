@@ -1,0 +1,19 @@
+# Free-plan Supabase projects pause after ~7 days without traffic, which would
+# leave the store with no products. This visits the public catalogue every
+# 3 days to keep it awake. It reads public data only (same key the website uses).
+name: Keep Supabase awake
+
+on:
+  schedule:
+    - cron: '23 7 */3 * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read one product
+        run: |
+          curl -fsS --retry 3 --max-time 30 \
+            "https://sjbmemythyggokmesadh.supabase.co/rest/v1/products?select=id&limit=1" \
+            -H "apikey: sb_publishable_1j_3IN2-fwZ5MU_FwxHG3A_NJrycN4T"
