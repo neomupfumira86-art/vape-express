@@ -3,6 +3,8 @@
 
 Options -Indexes
 DirectoryIndex index.html
+# Backup if rewrites are off: unknown addresses still load the app.
+ErrorDocument 404 /index.html
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
