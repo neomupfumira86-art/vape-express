@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { supabase } from './supabase.js';
 import { friendly } from './data.js';
-import { Field } from './ui.jsx';
+import { Field, STORE_URL } from './ui.jsx';
 import Logo from '../components/Logo.jsx';
 
 // Anyone can request an account here, but it has no rights until an existing
@@ -107,7 +107,7 @@ export function SignIn() {
           ) : mode !== 'signup' ? (
             <button type="button" className="linkbtn" onClick={() => { setMode('signin'); setError(''); }}>Back to sign in</button>
           ) : <span />}
-          <a className="linkbtn" href="/">View store</a>
+          <a className="linkbtn" href={STORE_URL}>View store</a>
         </div>
         <p className="adm-hint">This area is for the store owner and approved staff only.</p>
       </form>

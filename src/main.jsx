@@ -6,7 +6,12 @@ import './styles.css';
 
 // The admin dashboard is a separate bundle: shoppers never download it.
 const AdminApp = lazy(() => import('./admin/AdminApp.jsx'));
-const isAdmin = /^\/admin(\/|$)/.test(window.location.pathname);
+// admin.yourdomain.com opens the dashboard directly (same files as the main site).
+const onAdminHost = /^admin\./i.test(window.location.hostname);
+if (onAdminHost && !/^\/admin(\/|$)/.test(window.location.pathname)) {
+  window.location.replace('/admin' + window.location.search + window.location.hash);
+}
+const isAdmin = onAdminHost || /^\/admin(\/|$)/.test(window.location.pathname);
 
 // Show the last known contact details straight away; fresh ones load with the products.
 if (!isAdmin) applySettings(readCache()?.settings);

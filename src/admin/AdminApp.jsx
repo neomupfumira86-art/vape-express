@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { supabase, arrivedVia } from './supabase.js';
-import { go } from './ui.jsx';
+import { go, STORE_URL } from './ui.jsx';
 import Logo from '../components/Logo.jsx';
 import ProductList from './ProductList.jsx';
 import ProductEditor from './ProductEditor.jsx';
@@ -130,7 +130,7 @@ function Gate() {
           <div className="adm-row">
             {access !== 'denied' && <button className="btn btn--ink" onClick={() => window.location.reload()}>{access === 'pending' ? 'Check again' : 'Reload'}</button>}
             <button className="btn btn--line" onClick={signOut}>Sign out</button>
-            <a className="btn btn--line" href="/">View store</a>
+            <a className="btn btn--line" href={STORE_URL}>View store</a>
           </div>
         </div>
       </main>
@@ -147,7 +147,7 @@ function Gate() {
             <span className="mono">Store admin</span>
           </a>
           <div className="adm-head__actions">
-            <a className="adm-head__link mono" href="/" target="_blank" rel="noopener">View store ↗</a>
+            <a className="adm-head__link mono" href={STORE_URL} target="_blank" rel="noopener">View store ↗</a>
             <button className="adm-head__link mono" onClick={signOut}>Sign out</button>
           </div>
         </div>
@@ -192,7 +192,7 @@ function NotConfigured() {
           <code>VITE_SUPABASE_ANON_KEY</code> in Vercel (Project → Settings → Environment Variables) and redeploy once.
           The README has step-by-step instructions.
         </p>
-        <a className="btn btn--line" href="/">View store</a>
+        <a className="btn btn--line" href={STORE_URL}>View store</a>
       </div>
     </main>
   );

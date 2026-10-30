@@ -10,6 +10,9 @@ DirectoryIndex index.html
   # Force HTTPS (remove these two lines if your host already does this)
   RewriteCond %{HTTPS} !=on
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # admin.yourdomain.com → straight to the admin sign-in
+  RewriteCond %{HTTP_HOST} ^admin\. [NC]
+  RewriteRule ^$ /admin [R=302,L]
   # Page addresses (/shop, /delivery, /admin, ...) are handled by the app:
   # serve index.html for anything that isn't a real file or folder.
   RewriteCond %{REQUEST_FILENAME} !-f

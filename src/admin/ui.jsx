@@ -1,6 +1,11 @@
 import { navigate } from '../lib/router.jsx';
 import Dialog from '../components/Dialog.jsx';
 
+// On admin.yourdomain.com the store lives on the main domain.
+export const STORE_URL = /^admin\./i.test(window.location.hostname)
+  ? `${window.location.protocol}//${window.location.host.replace(/^admin\./i, '')}/`
+  : '/';
+
 export const go = (to) => {
   navigate(to);
   window.scrollTo({ top: 0, behavior: 'instant' });
